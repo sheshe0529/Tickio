@@ -1,0 +1,211 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+.login-container {
+  background-image: url('fondo_login.png');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.main-header {
+  width: 100%;
+  background-color: #10122e;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0.75rem 0;
+  box-sizing: border-box;
+}
+
+.header-logo {
+  width: 100px;
+  height: auto;
+}
+
+.login-card {
+  width: 400px;
+  background: rgba(30, 30, 30, 0.4);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  margin-top: 5rem;
+}
+
+.login-tabs {
+  display: flex;
+  margin-bottom: 1.5rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 25px;
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 20px;
+  background: transparent;
+  color: #ccc;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.tab.active {
+  background: #ffffff;
+  color: #333;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.login-form .form-group,
+.register-form .form-group,
+.forgot-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-form label,
+.register-form label,
+.forgot-form label {
+  display: block;
+  color: #eee;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-form input,
+.register-form input,
+.login-form select,
+.register-form select,
+.forgot-form input {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.login-form select,
+.register-form select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url('data:image/svg+xml;charset=UTF-8,%3csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"%3e%3cpolyline points="6 9 12 15 18 9"%3e%3c/polyline%3e%3c/svg%3e');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px 16px;
+  cursor: pointer;
+}
+
+.register-form select {
+  margin-top: 0.25rem;
+}
+
+.login-button {
+  width: 100%;
+  padding: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  background: #5A67D8;
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.login-button:hover {
+  background: #434190;
+}
+
+.login-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.login-links a {
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+
+.login-links a:hover {
+  text-decoration: underline;
+}
+
+.form-title {
+  color: #ffffff;
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+.form-description {
+  color: #ccc;
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  display: block;
+  text-align: center;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 0.9rem;
+  margin-top: 1.5rem;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+.success-message {
+  text-align: center;
+}
+
+.login-button:disabled {
+  background: #555;
+  cursor: not-allowed;
+}
+
+input:disabled {
+  background-color: #eee;
+  cursor: not-allowed;
+}
+
+.back-link[disabled] {
+  color: #666;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.form-login-error {
+  color: #ffbaba;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+.form-field-error {
+  color: #ffbaba;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  text-align: left;
+}
