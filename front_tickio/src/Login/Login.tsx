@@ -25,6 +25,12 @@ interface ErrorState {
   forgot: ForgotErrors;
 }
 
+type LoginView = 'login' | 'register' | 'forgotEmail' | 'forgotCode' | 'forgotReset' | 'forgotSuccess';
+
+interface LoginProps {
+  defaultView: LoginView;
+}
+
 const initialLoginForm = { email: '', password: '' };
 const initialRegisterForm = {
   fullName: '',
@@ -45,10 +51,10 @@ const initialForgotForm = {
 };
 const initialErrors: ErrorState = { login: '', register: {}, forgot: {} };
 
-function Login() {
-  const [view, setView] = useState('login');
+function Login({ defaultView = 'login' }: LoginProps) {
+  const [view, setView] = useState<LoginView>(defaultView);
   const [loading, setLoading] = useState(false);
-  
+
   const [loginForm, setLoginForm] = useState(initialLoginForm);
   const [registerForm, setRegisterForm] = useState(initialRegisterForm);
   const [forgotForm, setForgotForm] = useState(initialForgotForm);
@@ -90,7 +96,7 @@ function Login() {
   const handleRegisterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setRegisterForm({ ...registerForm, [e.target.id]: e.target.value });
   };
-  
+
   const handleForgotChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForgotForm({ ...forgotForm, [e.target.id]: e.target.value });
   };
@@ -120,7 +126,7 @@ function Login() {
     const newErrors: RegisterErrors = {};
 
     if (!registerForm.fullName) newErrors.fullName = 'El nombre es obligatorio.';
-    
+
     if (!registerForm.email) {
       newErrors.email = 'El correo es obligatorio.';
     } else if (!validateEmail(registerForm.email)) {
@@ -173,7 +179,7 @@ function Login() {
 
     setErrors({ ...errors, forgot: newErrors });
     if (Object.keys(newErrors).length > 0) return;
-    
+
     setLoading(true);
     setTimeout(() => {
       console.log('Simulando envío de correo a:', forgotForm.email);
@@ -192,7 +198,7 @@ function Login() {
     } else if (!codeRegex.test(forgotForm.code) || forgotForm.code.length !== 6) {
       newErrors.code = 'El código debe ser de 6 dígitos numéricos.';
     }
-    
+
     setErrors({ ...errors, forgot: newErrors });
     if (Object.keys(newErrors).length > 0) return;
 
@@ -203,7 +209,7 @@ function Login() {
       setView('forgotReset');
     }, 1500);
   };
-  
+
   const handleResetPassword = (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: ForgotErrors = {};
@@ -229,7 +235,7 @@ function Login() {
     }, 1500);
   };
 
-  const changeView = (newView: string) => {
+  const changeView = (newView: LoginView) => {
     setLoginForm(initialLoginForm);
     setRegisterForm(initialRegisterForm);
     setForgotForm(initialForgotForm);
@@ -246,13 +252,13 @@ function Login() {
       <div className="login-card">
         {(view === 'login' || view === 'register') && !loading && (
           <div className="login-tabs">
-            <button 
+            <button
               className={`tab ${view === 'login' ? 'active' : ''}`}
               onClick={() => changeView('login')}
             >
               Iniciar Sesión
             </button>
-            <button 
+            <button
               className={`tab ${view === 'register' ? 'active' : ''}`}
               onClick={() => changeView('register')}
             >
@@ -265,9 +271,9 @@ function Login() {
           <form className="login-form" onSubmit={handleLoginSubmit}>
             <div className="form-group">
               <label htmlFor="email">Correo electrónico</label>
-              <input 
-                type="email" 
-                id="email" 
+              <input
+                type="email"
+                id="email"
                 placeholder="Ingresa su correo electrónico"
                 value={loginForm.email}
                 onChange={handleLoginChange}
@@ -275,9 +281,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="password">Contraseña</label>
-              <input 
-                type="password" 
-                id="password" 
+              <input
+                type="password"
+                id="password"
                 placeholder="Contraseña"
                 value={loginForm.password}
                 onChange={handleLoginChange}
@@ -290,11 +296,11 @@ function Login() {
 
         {view === 'register' && (
           <form className="register-form" onSubmit={handleRegisterSubmit}>
-             <div className="form-group">
+            <div className="form-group">
               <label htmlFor="fullName">Nombre Completo</label>
-              <input 
-                type="text" 
-                id="fullName" 
+              <input
+                type="text"
+                id="fullName"
                 placeholder="Ingresa tu nombre completo"
                 value={registerForm.fullName}
                 onChange={handleRegisterChange}
@@ -303,9 +309,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="email">Correo electrónico</label>
-              <input 
-                type="email" 
-                id="email" 
+              <input
+                type="email"
+                id="email"
                 placeholder="Ingresa tu correo electrónico"
                 value={registerForm.email}
                 onChange={handleRegisterChange}
@@ -314,9 +320,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="phone">Teléfono</label>
-              <input 
-                type="tel" 
-                id="phone" 
+              <input
+                type="tel"
+                id="phone"
                 placeholder="+51"
                 value={registerForm.phone}
                 onChange={handleRegisterChange}
@@ -326,9 +332,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="dni">DNI</label>
-              <input 
-                type="text" 
-                id="dni" 
+              <input
+                type="text"
+                id="dni"
                 placeholder="Ingresa tu número de DNI"
                 value={registerForm.dni}
                 onChange={handleRegisterChange}
@@ -360,9 +366,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="password">Contraseña</label>
-              <input 
-                type="password" 
-                id="password" 
+              <input
+                type="password"
+                id="password"
                 placeholder="Mínimo 8 caracteres"
                 value={registerForm.password}
                 onChange={handleRegisterChange}
@@ -371,9 +377,9 @@ function Login() {
             </div>
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirmar contraseña</label>
-              <input 
-                type="password" 
-                id="confirmPassword" 
+              <input
+                type="password"
+                id="confirmPassword"
                 placeholder="Repite tu contraseña"
                 value={registerForm.confirmPassword}
                 onChange={handleRegisterChange}
@@ -390,10 +396,10 @@ function Login() {
             <p className="form-description">Ingresa tu correo electrónico para enviarte un código de recuperación.</p>
             <div className="form-group">
               <label htmlFor="email">Correo electrónico</label>
-              <input 
-                type="email" 
-                id="email" 
-                placeholder="tu-correo@ejemplo.com" 
+              <input
+                type="email"
+                id="email"
+                placeholder="tu-correo@ejemplo.com"
                 value={forgotForm.email}
                 onChange={handleForgotChange}
                 disabled={loading}
@@ -415,14 +421,14 @@ function Login() {
             <p className="form-description">Ingresa el código de 6 dígitos que enviamos a tu correo.</p>
             <div className="form-group">
               <label htmlFor="code">Código de 6 dígitos</label>
-              <input 
-                type="text" 
-                id="code" 
-                placeholder="123456" 
-                maxLength={6} 
+              <input
+                type="text"
+                id="code"
+                placeholder="123456"
+                maxLength={6}
                 value={forgotForm.code}
                 onChange={handleForgotChange}
-                disabled={loading} 
+                disabled={loading}
               />
               {errors.forgot.code && <div className="form-field-error">{errors.forgot.code}</div>}
             </div>
@@ -440,25 +446,25 @@ function Login() {
             <h3 className="form-title">Crear Nueva Contraseña</h3>
             <div className="form-group">
               <label htmlFor="newPassword">Nueva Contraseña</label>
-              <input 
-                type="password" 
-                id="newPassword" 
-                placeholder="Mínimo 8 caracteres" 
+              <input
+                type="password"
+                id="newPassword"
+                placeholder="Mínimo 8 caracteres"
                 value={forgotForm.newPassword}
                 onChange={handleForgotChange}
-                disabled={loading} 
+                disabled={loading}
               />
               {errors.forgot.newPassword && <div className="form-field-error">{errors.forgot.newPassword}</div>}
             </div>
             <div className="form-group">
               <label htmlFor="confirmNewPassword">Confirmar Contraseña</label>
-              <input 
-                type="password" 
-                id="confirmNewPassword" 
-                placeholder="Repite tu nueva contraseña" 
+              <input
+                type="password"
+                id="confirmNewPassword"
+                placeholder="Repite tu nueva contraseña"
                 value={forgotForm.confirmNewPassword}
                 onChange={handleForgotChange}
-                disabled={loading} 
+                disabled={loading}
               />
               {errors.forgot.confirmNewPassword && <div className="form-field-error">{errors.forgot.confirmNewPassword}</div>}
             </div>
@@ -467,7 +473,7 @@ function Login() {
             </button>
           </form>
         )}
-        
+
         {view === 'forgotSuccess' && (
           <div className="success-message">
             <h3 className="form-title">¡Éxito!</h3>
