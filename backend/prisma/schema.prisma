@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id Int @id @default(autoincrement())
+  nombre String
+  correo String @unique 
+  contrasena String 
+  telefono String
+  rol String 
+  Activa Int
+  
+  tipo1Id      Int
+  tipo2Id      Int
+  tipo3Id      Int
+
+  tipo1        Tipo_Evento  @relation("Tipo1Relation", fields: [tipo1Id], references: [id])
+  tipo2        Tipo_Evento  @relation("Tipo2Relation", fields: [tipo2Id], references: [id])
+  tipo3        Tipo_Evento  @relation("Tipo3Relation", fields: [tipo3Id], references: [id])
+
+  RUC          String?
+  razon_social String?
+}
+
+model Tipo_Evento {
+  id Int @id @default(autoincrement())
+  nombre String 
+
+  tipo1Usuarios Usuario[] @relation("Tipo1Relation")
+  tipo2Usuarios Usuario[] @relation("Tipo2Relation")
+  tipo3Usuarios Usuario[] @relation("Tipo3Relation")
+
+  eventosTipo    Evento[]   @relation("TipoPrincipal")
+  eventosSubtipo Evento[]   @relation("SubTipo")
+}
+
+model Evento {
+  id Int @id @default(autoincrement())
+  nombre String
+  descripcion String
+  direccion String
+  fecha_inicio DateTime
+  fecha_fin DateTime
+  hora_inicio Int
+  duracion Int
+  aforo Int
+  estado String
+  
+  tipoEventoId  Int
+  subtipoId     Int
+
+  tipoEvento    Tipo_Evento  @relation("TipoPrincipal", fields: [tipoEventoId], references: [id])
+  subtipo       Tipo_Evento  @relation("SubTipo", fields: [subtipoId], references: [id])
+}
+
