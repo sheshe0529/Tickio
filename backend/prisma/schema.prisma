@@ -68,8 +68,8 @@ model Evento {
   tipoEvento    Tipo_Evento  @relation("TipoPrincipal", fields: [tipoEventoId], references: [id])
   subtipo       Tipo_Evento  @relation("SubTipo", fields: [subtipoId], references: [id])
 
-  tipoTickets  Tipo_Ticket[]
-  descuentos   Descuentos[]
+  tipoTickets  Tipo_Ticket[]  // ← Agregado
+  descuentos   Descuentos[]   // ← Agregado
 }
 
 model Tipo_Ticket {
