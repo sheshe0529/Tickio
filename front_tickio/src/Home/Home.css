@@ -8,7 +8,7 @@
 
     /* Esto pondrá espacio entre el Hero, 
      la lista de Categorías y la lista de Eventos */
-    gap: 2rem;
+    gap: 1rem;
 
     /* Un poco de espacio antes del Footer */
     padding-bottom: 2rem;

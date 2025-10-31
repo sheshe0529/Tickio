@@ -5,7 +5,7 @@
     border-radius: 20px;
     overflow: hidden;
     /* Esconde lo que se salga */
-    margin: 1rem auto;
+    margin: 0 auto;
     /* Espacio arriba/abajo */
     max-width: 95%;
     /* Para que no toque los bordes de la pantalla */

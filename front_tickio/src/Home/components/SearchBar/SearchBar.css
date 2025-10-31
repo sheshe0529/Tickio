@@ -1,0 +1,45 @@
+.search-bar-container {
+    display: flex;
+    gap: 1rem;
+    width: 95%;
+    /* Igual al max-width del Hero */
+    max-width: 1200px;
+    /* Un límite para pantallas gigantes */
+    padding: 1rem 0;
+    margin-top: 1rem;
+}
+
+.search-input-wrapper {
+    flex: 1;
+    /* Hace que los inputs tomen el espacio disponible */
+    position: relative;
+    /* Para poner el ícono dentro */
+}
+
+/* Estilo para los dos inputs */
+.search-input-wrapper input {
+    width: 100%;
+    padding: 0.9rem 1rem 0.9rem 2.5rem;
+    /* Espacio a la izq. para el ícono */
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    /* Para que el padding no afecte el ancho */
+}
+
+/* Posición del ícono */
+.search-icon {
+    position: absolute;
+    left: 0.8rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    /* Color gris del ícono */
+}
+
+/* Hacemos el input de distrito más pequeño */
+.search-input-wrapper:last-child {
+    flex: 0 1 250px;
+    /* No crece, base de 250px */
+}
