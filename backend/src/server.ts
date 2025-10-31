@@ -17,7 +17,9 @@ app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /
 app.get("/", (_req, res) => {
     res.json({ message: "Servidor corriendo correctamente" });
 });
-// Iniciar servidor
+
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`))
+
+
 

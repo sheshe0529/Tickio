@@ -5,8 +5,7 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client"
-  output   = "../generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -35,6 +34,7 @@ model Usuario {
   razon_social String?
 
   ticket Ticket[]
+
 
 }
 
@@ -67,8 +67,10 @@ model Evento {
 
   tipoEvento    Tipo_Evento  @relation("TipoPrincipal", fields: [tipoEventoId], references: [id])
   subtipo       Tipo_Evento  @relation("SubTipo", fields: [subtipoId], references: [id])
-}
 
+  tipoTickets  Tipo_Ticket[]
+  descuentos   Descuentos[]
+}
 
 model Tipo_Ticket {
   id        Int      @id @default(autoincrement())
@@ -95,6 +97,7 @@ model Ticket {
   tipoTicket   Tipo_Ticket @relation(fields: [tipoTicketId], references: [id])
 
   usuarioId    Int 
+
   usuario      Usuario     @relation(fields: [usuarioId], references: [id])
 
   ordenId      Int
@@ -118,4 +121,3 @@ model Descuentos {
   eventoId            Int
   evento              Evento  @relation(fields: [eventoId], references: [id])
 }
-
