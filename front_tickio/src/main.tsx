@@ -4,9 +4,13 @@ import { BrowserRouter } from 'react-router-dom'; // 1. Importamos el Router
 
 import App from './App'; // 2. Apuntamos al nuevo App.tsx
 
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+import './Login/Login.css';
+
 // (Opcional) Si quieres estilos globales, este es un buen lugar
 // Por ahora, dejamos el de Login
-import './Login/Login.css';
 
 
 createRoot(document.getElementById('root')!).render(

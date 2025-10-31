@@ -8,6 +8,13 @@
     /* Un fondo oscuro como el mockup */
     font-family: Arial, sans-serif;
     box-sizing: border-box;
+
+    position: sticky;
+    /* 1. Le dices que sea "pegajoso" */
+    top: 0;
+    /* 2. Que se pegue en la parte de arriba (top: 0) */
+    z-index: 1000;
+    /* 3. Te aseguras que esté ENCIMA de todo lo demás */
 }
 
 .navbar-left {

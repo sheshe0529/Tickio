@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'; // 1. Importa useEffect
-import './Login.css';
 import logoTickio from '/logo.png';
 
 // (Las interfaces RegisterErrors, ForgotErrors, ErrorState no cambian)
