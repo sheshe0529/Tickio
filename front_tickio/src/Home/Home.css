@@ -1,0 +1,15 @@
+.home-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+
+    /* Esto centrará tus secciones (Hero, Categorías, etc.) */
+    align-items: center;
+
+    /* Esto pondrá espacio entre el Hero, 
+     la lista de Categorías y la lista de Eventos */
+    gap: 2rem;
+
+    /* Un poco de espacio antes del Footer */
+    padding-bottom: 2rem;
+}

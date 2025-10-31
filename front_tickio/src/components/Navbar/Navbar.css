@@ -1,0 +1,99 @@
+.navbar-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #0a0c24;
+    /* Un fondo oscuro como el mockup */
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+
+    position: sticky;
+    /* 1. Le dices que sea "pegajoso" */
+    top: 0;
+    /* 2. Que se pegue en la parte de arriba (top: 0) */
+    z-index: 1000;
+    /* 3. Te aseguras que esté ENCIMA de todo lo demás */
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 3rem;
+    /* <-- Le damos más espacio entre logo y links */
+}
+
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    /* <-- Menos espacio entre botones */
+}
+
+.navbar-links {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    /* Espacio entre elementos */
+}
+
+.navbar-logo-img {
+    width: 140px;
+    /* Ajusta este tamaño */
+    height: auto;
+    display: block;
+    /* Para eliminar espacios raros */
+}
+
+.navbar-logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+.navbar-links a {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.navbar-links a:hover {
+    color: white;
+}
+
+/* Estilos para los botones de Login/Registro */
+.navbar-button-secondary,
+.navbar-button-primary {
+    padding: 0.6rem 1.2rem;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.2s ease;
+    font-size: 0.9rem;
+}
+
+.navbar-button-secondary {
+    background-color: #2563eb;
+    color: white;
+    border: 1px solid #2563eb;
+}
+
+.navbar-button-primary {
+    background-color: transparent;
+    /* Color azul/morado de tus mockups */
+    color: #ccc;
+    border: 1px solid #4A5568;
+}
+
+.navbar-button-secondary:hover {
+    background-color: #1d4ed8;
+    border-color: #1d4ed8;
+}
+
+.navbar-button-primary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: #ccc;
+}

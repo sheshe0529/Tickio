@@ -1,0 +1,111 @@
+.footer-container {
+    width: 100%;
+    padding: 3rem 5%;
+    /* 5% de padding a los lados */
+    /* Este es el color azul oscuro del mockup */
+    background-color: #0a0c24;
+    color: #ccc;
+    font-family: Arial, sans-serif;
+    box-sizing: border-box;
+    margin-top: auto;
+    /* Se pega al fondo */
+}
+
+.footer-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    /* Para que en móvil se reordene */
+    justify-content: space-between;
+    gap: 2rem;
+    padding-bottom: 2rem;
+    /* La línea divisora gris sobre el copyright */
+    border-bottom: 1px solid #30363d;
+    align-items: flex-start;
+}
+
+/* --- Columna 1: Logo --- */
+.footer-column-logo {
+    /* Damos más espacio al logo */
+    min-width: 250px;
+}
+
+.footer-logo-img {
+    width: 300px;
+    /* Ajusta este tamaño si tu logo es muy grande */
+    height: auto;
+}
+
+/* (Si usas imagen: .footer-logo-img { max-width: 150px; } ) */
+
+
+/* --- Columna 2: Links --- */
+.footer-column-links {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 150px;
+    text-align: left;
+}
+
+.footer-column-links a {
+    color: white;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.footer-column-links a:hover {
+    text-decoration: underline;
+}
+
+/* --- Columna 3: Contacto --- */
+.footer-column-contact {
+    min-width: 200px;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    /* Espacio entre cada fila (Email, Phone, etc) */
+    text-align: left;
+}
+
+.footer-contact-item {
+    /* ESTA ES LA MAGIA: Convertimos CADA fila en una grilla de 3 columnas */
+    display: grid;
+    /* Col 1 (Icono) | Col 2 (Etiqueta) | Col 3 (Valor) */
+    grid-template-columns: 30px 130px 1fr;
+    align-items: center;
+    column-gap: 1.2rem;
+    /* Espacio entre icono, etiqueta y valor */
+}
+
+.footer-icon {
+    font-size: 1.2rem;
+    color: #888;
+    width: 30px;
+    /* Ancho fijo para el icono */
+    text-align: center;
+}
+
+.contact-label {
+    font-size: 0.9rem;
+    color: #888;
+    /* Texto gris */
+    font-weight: bold;
+}
+
+.contact-value {
+    font-size: 1rem;
+    color: white;
+    /* Texto blanco */
+    text-align: right;
+}
+
+/* --- Copyright --- */
+.footer-copyright {
+    text-align: center;
+    padding-top: 2rem;
+    font-size: 0.9rem;
+    color: #888;
+}

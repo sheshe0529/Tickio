@@ -1,0 +1,135 @@
+.hero-slider-container {
+    width: 100%;
+    position: relative;
+    /* Damos un borde redondeado como en el mockup */
+    border-radius: 20px;
+    overflow: hidden;
+    /* Esconde lo que se salga */
+    margin: 1rem auto;
+    /* Espacio arriba/abajo */
+    max-width: 95%;
+    /* Para que no toque los bordes de la pantalla */
+}
+
+/* --- Estilo para CADA slide --- */
+.hero-slide,
+.hero-slide-2 {
+    width: 100%;
+    height: 400px;
+    /* Altura del Hero */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    /* Para centrar el contenido */
+
+    /* El truco para oscurecer el fondo y que el texto resalte */
+    background-blend-mode: multiply;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+/* --- Imágenes de Fondo --- */
+/* (Pon tus imágenes en la carpeta 'public' y cambia los nombres) */
+.hero-slide {
+    background-image: url('/fondo_login.png');
+}
+
+.hero-slide-2 {
+    background-image: url('/fondo_login.png');
+}
+
+
+/* --- Contenido del Hero (Texto y Botón) --- */
+.hero-content {
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    /* Lo alineamos a la izquierda, no al centro */
+    transform: translateY(-50%);
+    color: white;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    max-width: 500px;
+}
+
+.hero-title {
+    font-size: 3.5rem;
+    /* 56px */
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.hero-button {
+    display: inline-block;
+    padding: 0.75rem 2rem;
+    /* Botón "fantasma" como en el mockup */
+    background-color: transparent;
+    border: 2px solid white;
+    color: white;
+    font-weight: bold;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.hero-button:hover {
+    background-color: white;
+    color: #333;
+}
+
+
+/* --- ARREGLO PARA LAS FLECHAS (MUY IMPORTANTE) --- */
+/* Esto arregla las flechas de 'react-slick' para que se vean bien */
+/* --- ESTILOS PARA NUESTRAS FLECHAS PERSONALIZADAS --- */
+/* --- ESTILOS PARA LAS FLECHAS --- */
+
+/* 1. Damos forma al círculo gris de fondo */
+/* --- ESTILOS PARA LAS FLECHAS (GANANDO LA ESPECIFICIDAD) --- */
+
+/* 1. Damos forma al círculo (AHORA MÁS ESPECÍFICO) */
+.hero-slider-container .slick-prev,
+.hero-slider-container .slick-next {
+    width: 40px;
+    height: 40px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    z-index: 10;
+    transition: background-color 0.2s ease;
+}
+
+.hero-slider-container .slick-prev:hover,
+.hero-slider-container .slick-next:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 2. Reemplazamos el contenido (AHORA MÁS ESPECÍFICO) */
+.hero-slider-container .slick-prev::before,
+.hero-slider-container .slick-next::before {
+    font-family: Arial, sans-serif !important;
+    font-size: 1.5rem;
+    /* El !important ya no es tan necesario, pero lo dejamos */
+    color: white;
+    font-weight: bold;
+    line-height: 1;
+    opacity: 1;
+    /* Esto anula el 'font-size: 0' y el 'color: transparent' de la librería */
+}
+
+/* 3. Asignamos el símbolo (AHORA MÁS ESPECÍFICO) */
+.hero-slider-container .slick-prev::before {
+    content: '<' !important;
+}
+
+.hero-slider-container .slick-next::before {
+    content: '>' !important;
+}
+
+/* 4. Posicionamos las flechas (AHORA MÁS ESPECÍFICO) */
+.hero-slider-container .slick-prev {
+    left: 20px;
+}
+
+.hero-slider-container .slick-next {
+    right: 20px;
+}
