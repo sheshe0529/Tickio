@@ -65,10 +65,10 @@ function EventList() {
 
             {/* --- Botones --- */}
             <div className="event-card-buttons">
-              <Link to={`/evento/${event.id}`} className="event-btn-details">
+              <Link to="/carrito" className="event-btn-details">
                 Ver detalles
               </Link>
-              <Link to={`/comprar/${event.id}`} className="event-btn-book">
+              <Link to="/carrito" className="event-btn-book">
                 Reservar ahora
               </Link>
             </div>
