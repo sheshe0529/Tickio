@@ -6,6 +6,7 @@ import Login from './Login/Login';
 // 2. Importa tus nuevos componentes
 import Layout from './components/Layout'; // El layout reutilizable
 import Home from './Home/Home';       // Tu página Home
+import EventDetail from './EventDetail/EventDetail';
 
 // (Pendiente) Aquí importaremos tus pantallas cuando las creemos
 // import EventDetail from './EventDetail/EventDetail';
@@ -23,7 +24,7 @@ function App() {
       <Route element={<Layout />}>
         {/* La ruta "/" ahora renderiza TU Home DENTRO del Layout */}
         <Route path="/" element={<Home />} />
-
+        <Route path="/evento/:id" element={<EventDetail />} />
         {/* (Pendiente) Aquí irá tu página de Evento */}
         {/* <Route path="/evento/:id" element={<EventDetail />} /> */}
       </Route>
