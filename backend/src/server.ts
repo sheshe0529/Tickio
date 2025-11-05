@@ -1,13 +1,14 @@
 
 import express from "express";
+import cors from "cors";
 // Importa tus routers (controllers)
-import usuarioRouter from './modules/usuario/usuario.controller';
+import usuarioRouter from './modules/usuario/usuario.router';
 import compraRouter from './modules/compra/compra.router';
 
 const app = express();
 // Middleware para interpretar JSON
 app.use(express.json());
-
+app.use(cors({ origin: "http://localhost:5173" }));
 // Rutas base
 app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
 app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras

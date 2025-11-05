@@ -120,7 +120,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
     console.log('Login Exitoso:', loginForm);
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: RegisterErrors = {};
 
@@ -163,7 +163,30 @@ function Login({ defaultView = 'login' }: LoginProps) {
     setErrors({ ...errors, register: newErrors });
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Registro Exitoso:', registerForm);
+      try {
+    const respuesta = await fetch("http://localhost:3000/usuarios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: registerForm.fullName,
+        correo: registerForm.email,
+        telefono: registerForm.phone,
+        //dni: registerForm.dni,
+        contrasena: registerForm.password,
+        rol:'C',
+        Activa: 1,
+      }),
+    });
+
+    if (!respuesta.ok) throw new Error("Error al registrar usuario");
+
+    const data = await respuesta.json();
+    alert(`✅ Usuario ${data.nombre} registrado con éxito`);
+    changeView("login"); // Redirige al login
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error al conectar con el servidor");
+  }
     }
   };
 
