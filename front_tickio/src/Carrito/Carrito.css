@@ -1,0 +1,58 @@
+.cart-page-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.cart-header h2 {
+  font-size: 1.75rem;
+  margin: 0;
+}
+
+.delete-all-button {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.delete-all-button .trash-icon {
+  font-size: 0.9rem;
+}
+
+.cart-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+.cart-items-list {
+  width: 100%;
+}
+
+.cart-summary-sidebar {
+  width: 100%;
+}
+
+.back-button {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 0.6rem 1.25rem;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 1rem;
+}
