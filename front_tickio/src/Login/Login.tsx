@@ -90,7 +90,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
   useEffect(() => {
     // Cargar los enums desde el backend
-    fetch('http://localhost:3000/eventos')
+    fetch('http://localhost:3000/tipo-eventos')
       .then((res) => res.json())
       .then((data) => setEventos(data))
       .catch((err) => console.error('Error al obtener eventos:', err));
@@ -183,7 +183,10 @@ function Login({ defaultView = 'login' }: LoginProps) {
         contrasena: registerForm.password,
         rol:'Cliente',
         Activa: 1,
-        //Distrito 
+        distrito:'LA_MOLINA',
+        tipo1:registerForm.event1,
+        tipo2:registerForm.event2,
+        tipo3:registerForm.event3, 
       }),
     });
 
