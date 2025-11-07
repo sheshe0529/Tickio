@@ -19,7 +19,8 @@ export const crearUsuario = async(req: Request, res: Response) =>
       tipo2,
       tipo3,
       RUC,
-      razon_social
+      razon_social,
+      distrito
     } = req.body;
 
     // Validar campos obligatorios
@@ -40,7 +41,8 @@ export const crearUsuario = async(req: Request, res: Response) =>
         tipo2,
         tipo3,
         RUC,
-        razon_social
+        razon_social,
+      distrito
       },
     });
 
@@ -97,7 +99,8 @@ export const actualizarUsuario = async(req: Request, res: Response) =>{
       tipo2,
       tipo3,
       RUC,
-      razon_social
+      razon_social,
+      distrito
     } = req.body;
 
     if (isNaN(id)) {
@@ -117,7 +120,8 @@ export const actualizarUsuario = async(req: Request, res: Response) =>{
         tipo2,
         tipo3,
         RUC,
-        razon_social
+        razon_social,
+      distrito
       },
     });
 

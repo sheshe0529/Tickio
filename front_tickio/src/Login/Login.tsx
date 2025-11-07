@@ -35,7 +35,7 @@ const initialRegisterForm = {
   fullName: '',
   email: '',
   phone: '',
-  dni: '',
+  //dni: '',
   event1: 'Evento 1',
   event2: 'Evento 2',
   event3: 'Evento 3',
@@ -86,7 +86,15 @@ function Login({ defaultView = 'login' }: LoginProps) {
     }
   }, [view]); // El 'view' aquí le dice que solo se ejecute cuando 'view' cambie
   // --- FIN DEL BLOQUE AÑADIDO ---
+  const [eventos, setEventos] = useState<string[]>([]);
 
+  useEffect(() => {
+    // Cargar los enums desde el backend
+    fetch('http://localhost:3000/eventos')
+      .then((res) => res.json())
+      .then((data) => setEventos(data))
+      .catch((err) => console.error('Error al obtener eventos:', err));
+  }, []);
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm({ ...loginForm, [e.target.id]: e.target.value });
@@ -140,7 +148,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
     } else if (registerForm.phone.length !== 9) {
       newErrors.phone = 'El teléfono debe tener 9 dígitos.';
     }
-
+    /*
     const dniRegex = /^\d+$/;
     if (!registerForm.dni) {
       newErrors.dni = 'El DNI es obligatorio.';
@@ -148,7 +156,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
       newErrors.dni = 'El DNI solo debe contener números.';
     } else if (registerForm.dni.length !== 8) {
       newErrors.dni = 'El DNI debe tener 8 dígitos.';
-    }
+    }*/
 
     if (!registerForm.password) {
       newErrors.password = 'La contraseña es obligatoria.';
@@ -173,8 +181,9 @@ function Login({ defaultView = 'login' }: LoginProps) {
         telefono: registerForm.phone,
         //dni: registerForm.dni,
         contrasena: registerForm.password,
-        rol:'C',
+        rol:'Cliente',
         Activa: 1,
+        //Distrito 
       }),
     });
 
@@ -352,6 +361,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
               />
               {errors.register.phone && <div className="form-field-error">{errors.register.phone}</div>}
             </div>
+            {/*
             <div className="form-group">
               <label htmlFor="dni">DNI</label>
               <input
@@ -363,7 +373,8 @@ function Login({ defaultView = 'login' }: LoginProps) {
                 maxLength={8}
               />
               {errors.register.dni && <div className="form-field-error">{errors.register.dni}</div>}
-            </div>
+            </div>*/} 
+            {/*
             <div className="form-group">
               <label htmlFor="event1">Eventos Favoritos</label>
               <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
@@ -375,7 +386,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
             <div className="form-group">
               <select id="event2" value={registerForm.event2} onChange={handleRegisterChange}>
                 <option>Evento 2</option>
-                <option>Evento C</option>
+                <option>Evento C</option> 
                 <option>Evento D</option>
               </select>
             </div>
@@ -386,6 +397,41 @@ function Login({ defaultView = 'login' }: LoginProps) {
                 <option>Evento F</option>
               </select>
             </div>
+            */}
+            <div className="form-group">
+              <label htmlFor="event1">Evento favorito</label>
+              <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <select id="event2" value={registerForm.event2} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <select id="event3" value={registerForm.event3} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+            ----
             <div className="form-group">
               <label htmlFor="password">Contraseña</label>
               <input

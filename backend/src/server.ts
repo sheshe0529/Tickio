@@ -4,6 +4,7 @@ import cors from "cors";
 // Importa tus routers (controllers)
 import usuarioRouter from './modules/usuario/usuario.router';
 import compraRouter from './modules/compra/compra.router';
+import { obtenerTiposDeEvento } from "./modules/tipoevento/tipoevento.controller";
 
 const app = express();
 // Middleware para interpretar JSON
@@ -12,7 +13,7 @@ app.use(cors({ origin: "http://localhost:5173" }));
 // Rutas base
 app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
 app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras
-
+app.use('/tipo-eventos', obtenerTiposDeEvento);
 
 // Ruta de prueba
 app.get("/", (_req, res) => {
