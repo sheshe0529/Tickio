@@ -1,16 +1,18 @@
 
 import express from "express";
 // Importa tus routers (controllers)
-import usuarioRouter from './modules/usuario/usuario.controller';
+// import usuarioRouter from './modules/usuario/usuario.controller';
 import compraRouter from './modules/compra/compra.router';
+import eventoRouter from "./modules/evento/evento.router";
 
 const app = express();
 // Middleware para interpretar JSON
 app.use(express.json());
 
 // Rutas base
-app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
+// app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
 app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras
+app.use("/eventos", eventoRouter); 
 
 
 // Ruta de prueba

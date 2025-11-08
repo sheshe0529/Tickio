@@ -1,4 +1,5 @@
-import { Request, Response, Router } from 'express';
+
+/*import { Request, Response, Router } from 'express';
 import prisma from '../../config/prisma';
 
 const router = Router();
@@ -77,3 +78,4 @@ router.delete('/:id', async (req: Request, res: Response) => {
 });
 
 export default router;
+*/
