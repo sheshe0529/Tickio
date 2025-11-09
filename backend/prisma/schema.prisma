@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,6 +5,86 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model Usuario {
+  id           Int         @id @default(autoincrement())
+  nombre       String
+  correo       String      @unique
+  contrasena   String
+  telefono     String
+  rol          String
+  Activa       Int
+  distrito     Distrito
+  tipo1        TipoEvento?
+  tipo2        TipoEvento?
+  tipo3        TipoEvento?
+  RUC          String?
+  razon_social String?
+  ticket       Ticket[]
+}
+
+model Evento {
+  id           Int                    @id @default(autoincrement())
+  nombre       String
+  descripcion  String
+  direccion    String
+  distrito     Distrito
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  hora_inicio  Int
+  duracion     Int
+  aforo        Int
+  estado       String
+  tipoEvento   TipoEvento
+  subtipo      SubtipoEvento
+  embedding    Unsupported("vector")?
+  descuentos   Descuentos[]
+  tipoTickets  Tipo_Ticket[]
+
+  @@index([embedding], map: "evento_embedding_hnsw")
+}
+
+model Tipo_Ticket {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  precio   Float
+  cantidad Int
+  eventoId Int
+  tickets  Ticket[]
+  evento   Evento   @relation(fields: [eventoId], references: [id])
+}
+
+model Ticket {
+  id           Int         @id @default(autoincrement())
+  fechaEmision DateTime
+  qr           Bytes?
+  nombre       String
+  apellido     String
+  dni          String
+  estado       String
+  tipoTicketId Int
+  usuarioId    Int
+  ordenId      Int
+  orden        Orden       @relation(fields: [ordenId], references: [id])
+  tipoTicket   Tipo_Ticket @relation(fields: [tipoTicketId], references: [id])
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
+}
+
+model Orden {
+  id         Int      @id @default(autoincrement())
+  estado     String
+  total      Float
+  estadoPago String
+  tickets    Ticket[]
+}
+
+model Descuentos {
+  id                  Int    @id @default(autoincrement())
+  nombre              String
+  descuentoPorcentaje Int
+  eventoId            Int
+  evento              Evento @relation(fields: [eventoId], references: [id])
 }
 
 enum TipoEvento {
@@ -23,96 +97,51 @@ enum TipoEvento {
 enum SubtipoEvento {
   INFANTIL
   GENERAL
-  MAS18 // Representa "+18"
+  MAS18
 }
 
-model Usuario {
-  id Int @id @default(autoincrement())
-  nombre String
-  correo String @unique 
-  contrasena String 
-  telefono String
-  rol String 
-  Activa Int
-
-  tipo1 TipoEvento?
-  tipo2 TipoEvento?
-  tipo3 TipoEvento?
-
-  RUC          String?
-  razon_social String?
-
-  ticket Ticket[]
-
-
-}
-
-
-model Evento {
-  id Int @id @default(autoincrement())
-  nombre String
-  descripcion String
-  direccion String
-  fecha_inicio DateTime
-  fecha_fin DateTime
-  hora_inicio Int
-  duracion Int
-  aforo Int
-  estado String
-
-  tipoEvento    TipoEvento  
-  subtipo       SubtipoEvento 
-
-  tipoTickets  Tipo_Ticket[]  // ← Agregado
-  descuentos   Descuentos[]   // ← Agregado
-}
-
-model Tipo_Ticket {
-  id        Int      @id @default(autoincrement())
-  nombre    String
-  precio    Float
-  cantidad  Int
-
-  eventoId  Int
-  evento    Evento   @relation(fields: [eventoId], references: [id])
-
-  tickets   Ticket[]
-}
-
-model Ticket {
-  id           Int         @id @default(autoincrement())   
-  fechaEmision DateTime                                    
-  qr           Bytes?                                      
-  nombre       String
-  apellido     String
-  dni          String
-  estado       String
-
-  tipoTicketId Int
-  tipoTicket   Tipo_Ticket @relation(fields: [tipoTicketId], references: [id])
-
-  usuarioId    Int 
-
-  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
-
-  ordenId      Int
-  orden        Orden       @relation(fields: [ordenId], references: [id])
-}
-
-model Orden {
-  id          Int      @id @default(autoincrement())  
-  estado      String                                 
-  total       Float                                  
-  estadoPago  String                                 
-
-  tickets     Ticket[]                               
-}
-
-model Descuentos {
-  id                  Int     @id @default(autoincrement())  
-  nombre              String
-  descuentoPorcentaje Int
-
-  eventoId            Int
-  evento              Evento  @relation(fields: [eventoId], references: [id])
+enum Distrito {
+  ATE
+  BARRANCO
+  BRE_A                   @map("BREÑA")
+  CARABAYLLO
+  CHACLACAYO
+  CHORRILLOS
+  CIENEGUILLA
+  COMAS
+  EL_AGUSTINO
+  INDEPENDENCIA
+  JESUS_MARIA
+  LA_MOLINA
+  LA_VICTORIA
+  LIMA
+  LINCE
+  LOS_OLIVOS
+  LURIGANCHO
+  LURIN
+  MAGDALENA_DEL_MAR
+  MIRAFLORES
+  PACHACAMAC
+  PUCUSANA
+  PUEBLO_LIBRE
+  PUENTE_PIEDRA
+  PUNTA_HERMOSA
+  PUNTA_NEGRA
+  RIMAC
+  SAN_BARTOLO
+  SAN_BORJA
+  SAN_ISIDRO
+  SAN_JUAN_DE_LURIGANCHO
+  SAN_JUAN_DE_MIRAFLORES
+  SAN_LORENZO
+  SAN_LUIS
+  SAN_MARTIN_DE_PORRES
+  SAN_MIGUEL
+  SANTA_ANITA
+  SANTA_MARIA_DEL_MAR
+  SANTA_ROSA
+  SANTIAGO_DE_SURCO
+  SURQUILLO
+  VILLA_EL_SALVADOR
+  VILLA_MARIA_DEL_TRIUNFO
 }
