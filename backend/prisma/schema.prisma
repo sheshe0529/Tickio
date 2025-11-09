@@ -21,6 +21,7 @@ model Usuario {
   tipo3        TipoEvento?
   RUC          String?
   razon_social String?
+  Evento       Evento[]
   ticket       Ticket[]
 }
 
@@ -39,10 +40,13 @@ model Evento {
   tipoEvento   TipoEvento
   subtipo      SubtipoEvento
   embedding    Unsupported("vector")?
+  usuarioId    Int?
   descuentos   Descuentos[]
+  Usuario      Usuario?               @relation(fields: [usuarioId], references: [id])
   tipoTickets  Tipo_Ticket[]
 
   @@index([embedding], map: "evento_embedding_hnsw")
+  @@index([usuarioId])
 }
 
 model Tipo_Ticket {
@@ -103,7 +107,7 @@ enum SubtipoEvento {
 enum Distrito {
   ATE
   BARRANCO
-  // BREÑA
+  BRE_A                   @map("BREÑA")
   CARABAYLLO
   CHACLACAYO
   CHORRILLOS

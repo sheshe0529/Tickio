@@ -1,14 +1,8 @@
-import { Prisma } from '@prisma/client';
-import { Request, Response, Router } from 'express';
+import { Request, Response } from 'express';
 import prisma from '../../config/prisma';
 
-const router = Router();
-
-/**
- * Crear compra (realizarCompra)
- */
-router.post("/", async (req: Request, res: Response) => {
-  const { usuarioId, tipoTicketId, nombre, apellido, dni, cantidad } = req.body;
+export const realizarCompra = async (req: Request, res: Response) => {
+  const { usuarioId, tipoTicketId, nombre, apellido, dni, cantidad} = req.body;
 
   try {
     // Buscar tipo de ticket
@@ -26,7 +20,7 @@ router.post("/", async (req: Request, res: Response) => {
     }
 
     // Crear orden y tickets en una transacción
-    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    const result = await prisma.$transaction(async (tx) => {
       const orden = await tx.orden.create({
         data: {
           estado: "PENDIENTE",
@@ -53,7 +47,6 @@ router.post("/", async (req: Request, res: Response) => {
         tickets.push(ticket);
       }
 
-      // Actualizar stock
       await tx.tipo_Ticket.update({
         where: { id: tipoTicketId },
         data: { cantidad: tipoTicket.cantidad - cantidad },
@@ -63,16 +56,15 @@ router.post("/", async (req: Request, res: Response) => {
     });
 
     res.json(result);
-  } catch (error) {
+    } catch (error) {
     console.error("Error en realizarCompra:", error);
     res.status(500).json({ error: "Error al procesar la compra", details: error });
-  }
-});
+    }
 
-/**
- * Listar compras por usuario
- */
-router.get("/usuario/:id", async (req: Request, res: Response) => {
+
+};
+
+export const listarComprasUsuario = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const compras = await prisma.orden.findMany({
@@ -90,12 +82,10 @@ router.get("/usuario/:id", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Error al listar compras del usuario" });
   }
-});
+};
 
-/**
- * Obtener compra por ID
- */
-router.get("/:id", async (req: Request, res: Response) => {
+
+export const obtenerCompraPorId = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const compra = await prisma.orden.findUnique({
@@ -114,12 +104,10 @@ router.get("/:id", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Error al obtener compra" });
   }
-});
+};
 
-/**
- * Cancelar compra
- */
-router.put("/:id/cancelar", async (req: Request, res: Response) => {
+
+export const cancelarCompra = async (req: Request, res: Response) => {
   const { id } = req.params;
   try {
     const orden = await prisma.orden.findUnique({
@@ -131,7 +119,7 @@ router.put("/:id/cancelar", async (req: Request, res: Response) => {
     if (orden.estado === "CANCELADA")
       return res.status(400).json({ error: "La orden ya está cancelada" });
 
-    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+    await prisma.$transaction(async (tx) => {
       for (const ticket of orden.tickets) {
         await tx.tipo_Ticket.update({
           where: { id: ticket.tipoTicketId },
@@ -155,6 +143,4 @@ router.put("/:id/cancelar", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Error al cancelar la compra" });
   }
-});
-
-export default router;
+};

@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Prisma, TipoEvento } from "@prisma/client"; // Prisma para errores y TipoEvento para el enum
+import { Prisma } from "@prisma/client"; // Prisma para errores y TipoEvento para el enum
 import prisma from "../../config/prisma"; // instancia única
 
 
@@ -16,6 +16,7 @@ export const crearEvento = async (req: Request, res: Response) => {
     aforo,
     tipoEvento,
     subtipo,
+    usuarioId,
   } = req.body;
 
   if (!nombre || !tipoEvento || !fecha_inicio || !fecha_fin) {
@@ -59,7 +60,8 @@ export const crearEvento = async (req: Request, res: Response) => {
         aforo,
         tipoEvento,
         subtipo,
-        estado: "PUBLICADO", // valor por defecto
+        estado: "PUBLICADO", 
+        usuarioId,
       },
     });
 
@@ -99,6 +101,7 @@ export const listarEventos = async (_req: Request, res: Response) => {
       include: {
         tipoTickets: true,
         descuentos: true,
+        Usuario: true,
       },
     });
     res.json(eventos);
@@ -128,18 +131,60 @@ export const obtenerEventoPorId = async (req: Request, res: Response) => {
   }
 };
 
-// Actualizar evento
 export const actualizarEvento = async (req: Request, res: Response) => {
   const { id } = req.params;
+
   try {
-    const evento = await prisma.evento.update({
-      where: { id: Number(id) },
-      data: req.body,
+    const data = { ...req.body };
+
+    // Convertir ID a número y validar
+    const idEvento = Number(id);
+    if (isNaN(idEvento)) {
+      return res.status(400).json({ error: "El ID del evento debe ser un número válido." });
+    }
+
+    // Buscar el evento actual para saber si tiene usuario asociado
+    const eventoActual = await prisma.evento.findUnique({
+      where: { id: idEvento },
+      select: { usuarioId: true },
     });
-    res.json(evento);
-  } catch (error) {
+
+    if (!eventoActual) {
+      return res.status(404).json({ error: "El evento no existe o ya fue eliminado." });
+    }
+
+    if ("usuarioId" in data) {
+      // Si el evento ya tiene usuario asignado y están intentando cambiarlo
+      if (eventoActual.usuarioId !== null && eventoActual.usuarioId !== data.usuarioId) {
+        return res.status(400).json({
+          error: "No está permitido cambiar el usuario asignado. Solo se puede asociar si actualmente es null.",
+        });
+      }
+    }
+
+    data.estado = "MODIFICADO";
+
+    // Ejecutar la actualización
+    const evento = await prisma.evento.update({
+      where: { id: idEvento },
+      data,
+    });
+
+    res.json({
+      message: "Evento actualizado correctamente. Estado cambiado a MODIFICADO.",
+      evento,
+    });
+  } catch (error: any) {
     console.error("Error al actualizar evento:", error);
-    res.status(500).json({ error: "Error al actualizar evento" });
+
+    if (error.code === "P2025") {
+      return res.status(404).json({ error: "El evento no existe o ya fue eliminado." });
+    }
+
+    res.status(500).json({
+      error: "Error interno del servidor al actualizar el evento.",
+      detalle: error.message,
+    });
   }
 };
 
@@ -176,41 +221,36 @@ export const eliminarEvento = async (req: Request, res: Response) => {
   }
 };
 
-// Listar eventos por tipo
-export const listarEventosPorTipo = async (req: Request, res: Response) => {
-  const { tipo } = req.params;
-
-  // Obtener los valores directamente del enum generado
-  const tiposValidos = Object.values(TipoEvento);
-
-  const tipoUpper = tipo.trim().toUpperCase();
-
-  // Validar directamente con el enum
-  if (!tiposValidos.includes(tipoUpper as TipoEvento)) {
-    return res.status(400).json({
-      error: `Tipo de evento no válido. Debe ser uno de: ${tiposValidos.join(", ")}`,
-      recibido: tipoUpper,
-    });
-  }
+// Listar eventos por usuario
+export const listarEventosPorUsuario = async (req: Request, res: Response) => {
+  const { usuarioId } = req.params; // se recibirá por la URL
 
   try {
+    const id = Number(usuarioId);
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "El ID de usuario debe ser un número válido." });
+    }
+
     const eventos = await prisma.evento.findMany({
-      where: { tipoEvento: tipoUpper as TipoEvento },
+      where: { usuarioId: id },
       include: {
         tipoTickets: true,
         descuentos: true,
+        Usuario: true, 
       },
     });
 
     if (eventos.length === 0) {
       return res.status(404).json({
-        mensaje: `No se encontraron eventos del tipo ${tipoUpper}`,
+        mensaje: `No se encontraron eventos creados por el usuario con ID ${id}.`,
       });
     }
 
     res.json(eventos);
   } catch (error) {
-    console.error("Error al listar eventos por tipo:", error);
-    res.status(500).json({ error: "Error interno al listar eventos por tipo" });
+    console.error("Error al listar eventos por usuario:", error);
+    res.status(500).json({
+      error: "Error interno al listar los eventos por usuario.",
+    });
   }
 };
