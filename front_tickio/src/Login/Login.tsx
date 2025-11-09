@@ -36,9 +36,10 @@ const initialRegisterForm = {
   email: '',
   phone: '',
   //dni: '',
-  event1: 'Evento 1',
-  event2: 'Evento 2',
-  event3: 'Evento 3',
+  distrito: '',
+  event1: null,
+  event2: null,
+  event3: null,
   password: '',
   confirmPassword: '',
 };
@@ -58,7 +59,8 @@ function Login({ defaultView = 'login' }: LoginProps) {
   const [registerForm, setRegisterForm] = useState(initialRegisterForm);
   const [forgotForm, setForgotForm] = useState(initialForgotForm);
   const [errors, setErrors] = useState<ErrorState>(initialErrors);
-
+  
+  //const INVALID_EVENT_VALUES = ["Evento 1", "Evento 2", "Evento 3"];
   // --- 2. AÑADE ESTE BLOQUE ---
   // Este hook se ejecuta cada vez que la variable 'view' cambia
   useEffect(() => {
@@ -96,6 +98,16 @@ function Login({ defaultView = 'login' }: LoginProps) {
       .catch((err) => console.error('Error al obtener eventos:', err));
   }, []);
 
+  const [distritos, setDistritos] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Cargar los enums desde el backend
+    fetch('http://localhost:3000/distritos')
+      .then((res) => res.json())
+      .then((data) => setDistritos(data))
+      .catch((err) => console.error('Error al obtener distritos:', err));
+  }, []);
+
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm({ ...loginForm, [e.target.id]: e.target.value });
   };
@@ -116,15 +128,15 @@ function Login({ defaultView = 'login' }: LoginProps) {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrors(initialErrors);
-
+    //datos incompletos
     if (!loginForm.email || !loginForm.password) {
       return setErrors({ ...errors, login: 'Por favor, complete todos los campos.' });
     }
-
+    //data de admin
     if (loginForm.email !== 'admin@tickio.com' || loginForm.password !== '123456') {
       return setErrors({ ...errors, login: 'Correo o contraseña incorrectos.' });
     }
-
+    //data de usuario cualquiera
     console.log('Login Exitoso:', loginForm);
   };
 
@@ -183,7 +195,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
         contrasena: registerForm.password,
         rol:'Cliente',
         Activa: 1,
-        distrito:'LA_MOLINA',
+        distrito:registerForm.distrito,
         tipo1:registerForm.event1,
         tipo2:registerForm.event2,
         tipo3:registerForm.event3, 
@@ -401,6 +413,18 @@ function Login({ defaultView = 'login' }: LoginProps) {
               </select>
             </div>
             */}
+            <div className="form-group">
+              <label htmlFor="distrito">Distrito</label>
+              <select id="distrito" value={registerForm.distrito} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {distritos.map((distrito) => (
+                  <option key={distrito} value={distrito}>
+                    {distrito.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <div className="form-group">
               <label htmlFor="event1">Evento favorito</label>
               <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
