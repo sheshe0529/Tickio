@@ -103,7 +103,7 @@ enum SubtipoEvento {
 enum Distrito {
   ATE
   BARRANCO
-  // BREÑA
+  BRE_A                   @map("BREÑA")
   CARABAYLLO
   CHACLACAYO
   CHORRILLOS

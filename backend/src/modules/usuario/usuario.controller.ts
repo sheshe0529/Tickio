@@ -145,6 +145,6 @@ export const eliminarUsuario = async(req: Request, res: Response) =>{
   const { id } = req.params;
   await prisma.usuario.delete({ where: { id: Number(id) } });
   res.json({ message: 'Usuario eliminado' });
-};
 
+};
 
