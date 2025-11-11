@@ -92,6 +92,90 @@ model Descuentos {
   evento              Evento @relation(fields: [eventoId], references: [id])
 }
 
+model Usuario {
+  id           Int         @id @default(autoincrement())
+  nombre       String
+  correo       String      @unique
+  contrasena   String
+  telefono     String
+  rol          String
+  Activa       Int
+  distrito     Distrito
+  tipo1        TipoEvento?
+  tipo2        TipoEvento?
+  tipo3        TipoEvento?
+  RUC          String?
+  razon_social String?
+  Evento       Evento[]
+  ticket       Ticket[]
+}
+
+model Evento {
+  id           Int                    @id @default(autoincrement())
+  nombre       String
+  descripcion  String
+  direccion    String
+  distrito     Distrito
+  fecha_inicio DateTime
+  fecha_fin    DateTime
+  hora_inicio  Int
+  duracion     Int
+  aforo        Int
+  estado       String
+  tipoEvento   TipoEvento
+  subtipo      SubtipoEvento
+  embedding    Unsupported("vector")?
+  usuarioId    Int?
+  descuentos   Descuentos[]
+  Usuario      Usuario?               @relation(fields: [usuarioId], references: [id])
+  tipoTickets  Tipo_Ticket[]
+
+  @@index([embedding], map: "evento_embedding_hnsw")
+  @@index([usuarioId])
+}
+
+model Tipo_Ticket {
+  id       Int      @id @default(autoincrement())
+  nombre   String
+  precio   Float
+  cantidad Int
+  eventoId Int
+  tickets  Ticket[]
+  evento   Evento   @relation(fields: [eventoId], references: [id])
+}
+
+model Ticket {
+  id           Int         @id @default(autoincrement())
+  fechaEmision DateTime
+  qr           Bytes?
+  nombre       String
+  apellido     String
+  dni          String
+  estado       String
+  tipoTicketId Int
+  usuarioId    Int
+  ordenId      Int
+  orden        Orden       @relation(fields: [ordenId], references: [id])
+  tipoTicket   Tipo_Ticket @relation(fields: [tipoTicketId], references: [id])
+  usuario      Usuario     @relation(fields: [usuarioId], references: [id])
+}
+
+model Orden {
+  id         Int      @id @default(autoincrement())
+  estado     String
+  total      Float
+  estadoPago String
+  tickets    Ticket[]
+}
+
+model Descuentos {
+  id                  Int    @id @default(autoincrement())
+  nombre              String
+  descuentoPorcentaje Int
+  eventoId            Int
+  evento              Evento @relation(fields: [eventoId], references: [id])
+}
+
 enum TipoEvento {
   CONCIERTO
   DEPORTE
