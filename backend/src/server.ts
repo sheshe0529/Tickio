@@ -1,25 +1,32 @@
-
+// src/server.ts
 import express from "express";
-// Importa tus routers (controllers)
-import usuarioRouter from './modules/usuario/usuario.controller';
-import compraRouter from './modules/compra/compra.router';
+
+
+// Routers existentes
+import usuarioRouter from "./modules/usuario/usuario.controller";
+import compraRouter from "./modules/compra/compra.router";
+
+// Nuevo: router de búsqueda
+import searchRouter from "./routes/search";
 
 const app = express();
-// Middleware para interpretar JSON
+
+// Middlewares
+
 app.use(express.json());
 
-// Rutas base
-app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
-app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras
 
+// Rutas base existentes
+app.use("/usuarios", usuarioRouter);
+app.use("/compras", compraRouter);
 
-// Ruta de prueba
+// Nueva ruta de búsqueda (frontend hará /api/search?... )
+app.use("/buscarEventos", searchRouter);
+
+// Ping
 app.get("/", (_req, res) => {
-    res.json({ message: "Servidor corriendo correctamente" });
+  res.json({ message: "Servidor corriendo correctamente" });
 });
 
-const PORT = 3000;
-app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`))
-
-
-
+const PORT = Number(process.env.PORT) || 3000;
+app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));
