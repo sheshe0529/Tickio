@@ -21,15 +21,14 @@ app.use(cors({ origin: "http://localhost:5173" }));
 // Rutas base
 // app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
 app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras
-app.use("/eventos", eventoRouter); 
-app.use("/buscarEventos", searchRouter);
+app.use("/eventos", eventoRouter); //CRUD EVENTOS
+app.use("/buscarEventos", searchRouter); //busqueda compleja de eventos
 
 app.get("/", (_req, res) => res.json({ message: "Servidor corriendo correctamente" }));
-app.use('/tipo-eventos', obtenerTiposDeEvento);
-app.use('/distritos',obtenerDistrito);
-
-app.use('/eventosBuscar', eventoBuscarRouter); 
-app.use('/distritos', distritoRouter)
+app.use('/tipo-eventos', obtenerTiposDeEvento);//tipos de eventos
+app.use('/buscarEventos', eventoBuscarRouter); //FILTROS TIPO EVENTOS Y SUBTIPO //
+// http://localhost:3000/eventosBuscar/buscar?tipoEvento=CONCIERTO&
+app.use('/distritos', distritoRouter) //distritos y buscar eventos por distrito
 
 const PORT = Number(process.env.PORT) || 3000;
 app.listen(PORT, () => console.log(`Servidor corriendo en puerto ${PORT}`));

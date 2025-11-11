@@ -8,7 +8,7 @@ import { buscarEventosPorDistrito } from "./distrito.controller";
 const router = Router();
 
 //get
-router.get('/distritos',obtenerDistrito);
+router.get('/',obtenerDistrito);
 // Ruta GET para buscar eventos por distrito
 router.get("/buscar/:distrito", buscarEventosPorDistrito);
 
