@@ -1,0 +1,134 @@
+.event-detail-page {
+    width: 90%;
+    max-width: 1300px;
+    margin: 1.5rem auto;
+    /* Centra la página y le da espacio */
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.back-button {
+    display: inline-block;
+    margin-bottom: 1.3rem;
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+
+    padding: 0.5rem 1rem;
+    border: 1px solid #007bff;
+    border-radius: 8px;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+.back-button:hover {
+    background: #007bff;
+    color: white;
+}
+
+.event-detail-container {
+    display: flex;
+    gap: 4rem;
+    /* Espacio entre las 2 columnas */
+}
+
+/* --- COLUMNA IZQUIERDA --- */
+.event-detail-left {
+    flex: 2;
+    /* Ocupa 2/3 del espacio */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.event-main-image {
+    width: 100%;
+    border-radius: 12px;
+}
+
+.location-card {
+    background: #f9f9f9;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 1.5rem;
+}
+
+.stadium-map-image {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+/* --- COLUMNA DERECHA --- */
+.event-detail-right {
+    flex: 3;
+    /* Ocupa 3/5 del espacio (un poco más ancha) */
+}
+
+.event-detail-right h2 {
+    font-size: 2rem;
+    margin-top: 0;
+}
+
+.event-info {
+    display: flex;
+    gap: 1rem;
+    color: #555;
+    margin: 1rem 0;
+}
+
+.event-info span {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.ticket-zones {
+    margin-top: 2rem;
+}
+
+.cart-button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: white;
+    background-color: #007bff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 2rem;
+}
+
+.cart-button:hover {
+    background-color: #0056b3;
+}
+
+.location-card h3 {
+    margin: 0;
+}
+
+.location-card p {
+    margin: 0;
+}
+
+.location-header,
+.location-address {
+    display: flex;
+    align-items: center;
+    /* <-- ESTO ARREGLA LA ALINEACIÓN VERTICAL */
+    gap: 0.5rem;
+}
+
+.location-header {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 0.8rem;
+}
+
+.location-address {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 1rem;
+    /* Espacio antes del mapa */
+}
