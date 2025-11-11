@@ -1,11 +1,12 @@
-
-/*import { Request, Response, Router } from 'express';
+import { Request, Response, Router } from 'express';
 import prisma from '../../config/prisma';
 
-const router = Router();
 
-// ✅ Crear usuario
-router.post("/", async (req: Request, res: Response) => {
+
+// Crear usuario
+//router.post("/", async (req: Request, res: Response) => 
+export const crearUsuario = async(req: Request, res: Response) =>
+{
   try {
     const {
       nombre,
@@ -14,34 +15,20 @@ router.post("/", async (req: Request, res: Response) => {
       telefono,
       rol,
       Activa,
-      distrito,        // Enum Distrito
-      tipo1,           // Enum TipoEvento?
-      tipo2,           // Enum TipoEvento?
-      tipo3,           // Enum TipoEvento?
+      tipo1,
+      tipo2,
+      tipo3,
       RUC,
       razon_social,
+      distrito
     } = req.body;
 
     // Validar campos obligatorios
-    if (
-      !nombre ||
-      !correo ||
-      !contrasena ||
-      !telefono ||
-      !rol ||
-      Activa === undefined ||
-      !distrito
-    ) {
+    /*if (!nombre || !correo || !contrasena || !telefono ||
+        !tipo1 || !tipo2 || !tipo3) {
       return res.status(400).json({ error: "Faltan campos obligatorios" });
-    }
+    }*/
 
-    // Convertir Activa a número
-    const activaNum = Number(Activa);
-    if (Number.isNaN(activaNum)) {
-      return res.status(400).json({ error: "El campo Activa debe ser numérico" });
-    }
-
-    // Crear usuario
     const usuario = await prisma.usuario.create({
       data: {
         nombre,
@@ -49,13 +36,13 @@ router.post("/", async (req: Request, res: Response) => {
         contrasena,
         telefono,
         rol,
-        Activa: activaNum,
-        distrito,           // Enum Distrito (ej: "MIRAFLORES")
-        tipo1: tipo1 ?? null,
-        tipo2: tipo2 ?? null,
-        tipo3: tipo3 ?? null,
-        RUC: RUC ?? null,
-        razon_social: razon_social ?? null,
+        Activa,
+        tipo1,
+        tipo2,
+        tipo3,
+        RUC,
+        razon_social,
+      distrito
       },
     });
 
@@ -64,67 +51,100 @@ router.post("/", async (req: Request, res: Response) => {
     console.error(error);
     res.status(500).json({ error: "Error al crear usuario" });
   }
-});
+};
+
+
+// Obtener usuario por ID
+//router.get('/:id', async (req: Request, res: Response) => {
+export const obtenerUsuarioPorId = async(req: Request, res: Response) =>{
+  const { id } = req.params;
+
+  try {
+    // Convertir el ID a número (si tu campo ID en Prisma es Int)
+    const usuario = await prisma.usuario.findUnique({
+      where: { id: Number(id) },
+    });
+
+    if (!usuario) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    res.json(usuario);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener el usuario' });
+  }
+};
+
 
 // ✅ Listar usuarios
-router.get("/", async (_req: Request, res: Response) => {
+//router.get('/', async (_req: Request, res: Response) => {
+export const listarUsuarios = async(req: Request, res: Response) =>{
   const usuarios = await prisma.usuario.findMany();
   res.json(usuarios);
-});
+};
 
 // ✅ Actualizar usuario
-router.put("/:id", async (req: Request, res: Response) => {
+//router.put('/:id', async (req: Request, res: Response) => {
+export const actualizarUsuario = async(req: Request, res: Response) =>{
   try {
-    const { id } = req.params;
+    const id = parseInt(req.params.id); // ✅ convertir a número
     const {
       nombre,
       correo,
+      contrasena,
       telefono,
       rol,
       Activa,
-      distrito,
       tipo1,
       tipo2,
       tipo3,
       RUC,
       razon_social,
+      distrito
     } = req.body;
 
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "El ID no es válido" });
+    }
+
     const usuario = await prisma.usuario.update({
-      where: { id: Number(id) },
-      data: {
+      where: { id },
+       data: {
         nombre,
         correo,
+        contrasena,
         telefono,
         rol,
-        Activa: Activa !== undefined ? Number(Activa) : undefined,
-        distrito,
+        Activa,
         tipo1,
         tipo2,
         tipo3,
         RUC,
         razon_social,
+      distrito
       },
     });
 
     res.json(usuario);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
-    res.status(500).json({ error: "Error al actualizar usuario" });
+
+    // Prisma lanza error si el id no existe
+    if (error.code === 'P2025') {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.status(500).json({ error: "Error al actualizar el usuario" });
   }
-});
+};
+
 
 // ✅ Eliminar usuario
-router.delete("/:id", async (req: Request, res: Response) => {
-  try {
-    const { id } = req.params;
-    await prisma.usuario.delete({ where: { id: Number(id) } });
-    res.json({ message: "Usuario eliminado" });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al eliminar usuario" });
-  }
-});
+//router.delete('/:id', async (req: Request, res: Response) => {
+export const eliminarUsuario = async(req: Request, res: Response) =>{
+  const { id } = req.params;
+  await prisma.usuario.delete({ where: { id: Number(id) } });
+  res.json({ message: 'Usuario eliminado' });
 
-export default router;
-*/
+};
+

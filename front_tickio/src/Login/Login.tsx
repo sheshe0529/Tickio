@@ -35,10 +35,11 @@ const initialRegisterForm = {
   fullName: '',
   email: '',
   phone: '',
-  dni: '',
-  event1: 'Evento 1',
-  event2: 'Evento 2',
-  event3: 'Evento 3',
+  //dni: '',
+  distrito: '',
+  event1: null,
+  event2: null,
+  event3: null,
   password: '',
   confirmPassword: '',
 };
@@ -58,7 +59,8 @@ function Login({ defaultView = 'login' }: LoginProps) {
   const [registerForm, setRegisterForm] = useState(initialRegisterForm);
   const [forgotForm, setForgotForm] = useState(initialForgotForm);
   const [errors, setErrors] = useState<ErrorState>(initialErrors);
-
+  
+  //const INVALID_EVENT_VALUES = ["Evento 1", "Evento 2", "Evento 3"];
   // --- 2. AÑADE ESTE BLOQUE ---
   // Este hook se ejecuta cada vez que la variable 'view' cambia
   useEffect(() => {
@@ -86,7 +88,25 @@ function Login({ defaultView = 'login' }: LoginProps) {
     }
   }, [view]); // El 'view' aquí le dice que solo se ejecute cuando 'view' cambie
   // --- FIN DEL BLOQUE AÑADIDO ---
+  const [eventos, setEventos] = useState<string[]>([]);
 
+  useEffect(() => {
+    // Cargar los enums desde el backend
+    fetch('http://localhost:3000/tipo-eventos')
+      .then((res) => res.json())
+      .then((data) => setEventos(data))
+      .catch((err) => console.error('Error al obtener eventos:', err));
+  }, []);
+
+  const [distritos, setDistritos] = useState<string[]>([]);
+
+  useEffect(() => {
+    // Cargar los enums desde el backend
+    fetch('http://localhost:3000/distritos')
+      .then((res) => res.json())
+      .then((data) => setDistritos(data))
+      .catch((err) => console.error('Error al obtener distritos:', err));
+  }, []);
 
   const handleLoginChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLoginForm({ ...loginForm, [e.target.id]: e.target.value });
@@ -108,19 +128,19 @@ function Login({ defaultView = 'login' }: LoginProps) {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setErrors(initialErrors);
-
+    //datos incompletos
     if (!loginForm.email || !loginForm.password) {
       return setErrors({ ...errors, login: 'Por favor, complete todos los campos.' });
     }
-
+    //data de admin
     if (loginForm.email !== 'admin@tickio.com' || loginForm.password !== '123456') {
       return setErrors({ ...errors, login: 'Correo o contraseña incorrectos.' });
     }
-
+    //data de usuario cualquiera
     console.log('Login Exitoso:', loginForm);
   };
 
-  const handleRegisterSubmit = (e: React.FormEvent) => {
+  const handleRegisterSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: RegisterErrors = {};
 
@@ -140,7 +160,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
     } else if (registerForm.phone.length !== 9) {
       newErrors.phone = 'El teléfono debe tener 9 dígitos.';
     }
-
+    /*
     const dniRegex = /^\d+$/;
     if (!registerForm.dni) {
       newErrors.dni = 'El DNI es obligatorio.';
@@ -148,7 +168,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
       newErrors.dni = 'El DNI solo debe contener números.';
     } else if (registerForm.dni.length !== 8) {
       newErrors.dni = 'El DNI debe tener 8 dígitos.';
-    }
+    }*/
 
     if (!registerForm.password) {
       newErrors.password = 'La contraseña es obligatoria.';
@@ -163,7 +183,34 @@ function Login({ defaultView = 'login' }: LoginProps) {
     setErrors({ ...errors, register: newErrors });
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Registro Exitoso:', registerForm);
+      try {
+    const respuesta = await fetch("http://localhost:3000/usuarios", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        nombre: registerForm.fullName,
+        correo: registerForm.email,
+        telefono: registerForm.phone,
+        //dni: registerForm.dni,
+        contrasena: registerForm.password,
+        rol:'Cliente',
+        Activa: 1,
+        distrito:registerForm.distrito,
+        tipo1:registerForm.event1,
+        tipo2:registerForm.event2,
+        tipo3:registerForm.event3, 
+      }),
+    });
+
+    if (!respuesta.ok) throw new Error("Error al registrar usuario");
+
+    const data = await respuesta.json();
+    alert(`✅ Usuario ${data.nombre} registrado con éxito`);
+    changeView("login"); // Redirige al login
+  } catch (error) {
+    console.error(error);
+    alert("❌ Error al conectar con el servidor");
+  }
     }
   };
 
@@ -329,6 +376,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
               />
               {errors.register.phone && <div className="form-field-error">{errors.register.phone}</div>}
             </div>
+            {/*
             <div className="form-group">
               <label htmlFor="dni">DNI</label>
               <input
@@ -340,7 +388,8 @@ function Login({ defaultView = 'login' }: LoginProps) {
                 maxLength={8}
               />
               {errors.register.dni && <div className="form-field-error">{errors.register.dni}</div>}
-            </div>
+            </div>*/} 
+            {/*
             <div className="form-group">
               <label htmlFor="event1">Eventos Favoritos</label>
               <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
@@ -352,7 +401,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
             <div className="form-group">
               <select id="event2" value={registerForm.event2} onChange={handleRegisterChange}>
                 <option>Evento 2</option>
-                <option>Evento C</option>
+                <option>Evento C</option> 
                 <option>Evento D</option>
               </select>
             </div>
@@ -363,6 +412,53 @@ function Login({ defaultView = 'login' }: LoginProps) {
                 <option>Evento F</option>
               </select>
             </div>
+            */}
+            <div className="form-group">
+              <label htmlFor="distrito">Distrito</label>
+              <select id="distrito" value={registerForm.distrito} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {distritos.map((distrito) => (
+                  <option key={distrito} value={distrito}>
+                    {distrito.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="event1">Evento favorito</label>
+              <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <select id="event2" value={registerForm.event2} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="form-group">
+              <select id="event3" value={registerForm.event3} onChange={handleRegisterChange}>
+                <option value="">Seleccione un evento</option>
+                {eventos.map((evento) => (
+                  <option key={evento} value={evento}>
+                    {evento.replace('_', ' ')}
+                  </option>
+                ))}
+              </select>
+            </div>
+            ----
             <div className="form-group">
               <label htmlFor="password">Contraseña</label>
               <input
