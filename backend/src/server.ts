@@ -24,7 +24,7 @@ app.use('/tipo-eventos', obtenerTiposDeEvento);
 app.use('/distritos',obtenerDistrito);
 
 app.use('/eventosBuscar', eventoBuscarRouter); 
-app.use('/distritos', distritoRouter)
+app.use('/distritosBuscar', distritoRouter)// rama merge Brenda
 
 // Ruta de prueba
 app.get("/", (_req, res) => {
