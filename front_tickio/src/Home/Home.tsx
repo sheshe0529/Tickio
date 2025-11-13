@@ -40,7 +40,7 @@ function Home() {
       if (filtros.q) params.append('q', filtros.q);
       if (filtros.distrito) params.append('distrito', filtros.distrito);
       if (filtros.tipo) params.append('tipo', filtros.tipo);
-
+      params.append('limit', '100');
       // Llamamos a tu "Súper Buscador"
       const res = await fetch(`http://localhost:3000/buscarEventos?${params.toString()}`);
       
