@@ -148,3 +148,28 @@ export const eliminarUsuario = async(req: Request, res: Response) =>{
 
 };
 
+
+export const loginUsuario = async (req: Request, res: Response) => {
+  const { correo, contrasena } = req.body;
+
+  try {
+    // 1. Buscar el usuario por correo
+    const usuario = await prisma.usuario.findUnique({
+      where: { correo: correo },
+    });
+
+    // 2. Si no existe el usuario O la contraseña no coincide
+    if (!usuario || usuario.contrasena !== contrasena) {
+      return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+    }
+
+    // 3. Si todo está bien, devolver el usuario (sin la contraseña por seguridad)
+    const { contrasena: _, ...usuarioSinPass } = usuario;
+    res.json(usuarioSinPass);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Error al iniciar sesión" });
+  }
+};
+

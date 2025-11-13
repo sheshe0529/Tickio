@@ -1,3 +1,6 @@
+/* =========================================
+   1. ESTILOS GENERALES DEL NAVBAR
+   ========================================= */
 .navbar-container {
     width: 100%;
     display: flex;
@@ -5,65 +8,50 @@
     align-items: center;
     padding: 1rem 2rem;
     background-color: #0a0c24;
-    /* Un fondo oscuro como el mockup */
-    font-family: Arial, sans-serif;
+    /* Fondo oscuro */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* 👈 FUENTE MODERNA */
     box-sizing: border-box;
-
     position: sticky;
-    /* 1. Le dices que sea "pegajoso" */
     top: 0;
-    /* 2. Que se pegue en la parte de arriba (top: 0) */
     z-index: 1000;
-    /* 3. Te aseguras que esté ENCIMA de todo lo demás */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.navbar-left {
-    display: flex;
-    align-items: center;
-    gap: 3rem;
-    /* <-- Le damos más espacio entre logo y links */
-}
-
+.navbar-left,
 .navbar-right {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    /* <-- Menos espacio entre botones */
 }
 
+.navbar-left { gap: 3rem; }
+.navbar-right { gap: 1rem; }
+
+/* LOGO */
+.navbar-logo-img {
+    width: 140px;
+    height: auto;
+    display: block;
+}
+
+/* ENLACES */
 .navbar-links {
     display: flex;
     align-items: center;
     gap: 1.5rem;
-    /* Espacio entre elementos */
-}
-
-.navbar-logo-img {
-    width: 140px;
-    /* Ajusta este tamaño */
-    height: auto;
-    display: block;
-    /* Para eliminar espacios raros */
-}
-
-.navbar-logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    color: white;
-    text-decoration: none;
 }
 
 .navbar-links a {
     color: #ccc;
     text-decoration: none;
     font-weight: 500;
+    transition: color 0.2s ease;
 }
 
 .navbar-links a:hover {
     color: white;
 }
 
-/* Estilos para los botones de Login/Registro */
+/* BOTONES LOGIN/REGISTRO */
 .navbar-button-secondary,
 .navbar-button-primary {
     padding: 0.6rem 1.2rem;
@@ -82,18 +70,236 @@
 
 .navbar-button-primary {
     background-color: transparent;
-    /* Color azul/morado de tus mockups */
     color: #ccc;
     border: 1px solid #4A5568;
 }
 
-.navbar-button-secondary:hover {
-    background-color: #1d4ed8;
-    border-color: #1d4ed8;
+.navbar-button-secondary:hover { background-color: #1d4ed8; }
+.navbar-button-primary:hover { background-color: rgba(255, 255, 255, 0.1); color: white; }
+
+
+/* =========================================
+   2. ESTILOS USUARIO LOGUEADO
+   ========================================= */
+.navbar-logged-in {
+    display: flex;
+    align-items: center;
+    gap: 20px;
 }
 
-.navbar-button-primary:hover {
+.cart-button {
+    background: none;
+    border: none;
+    color: #e2e8f0;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: transform 0.2s, color 0.2s;
+    text-decoration: none;
+}
+
+.cart-button:hover {
     background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: scale(1.1);
+}
+
+.user-menu-container { position: relative; }
+
+.user-button {
+    background: none;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    padding: 5px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+    font-family: inherit; /* Hereda la fuente bonita */
+}
+
+.user-button:hover { background-color: rgba(255, 255, 255, 0.1); }
+.user-avatar { font-size: 1.8rem; color: #2563eb; }
+
+.dropdown-menu {
+    position: absolute;
+    top: 130%;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    width: 220px;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Aseguramos fuente aquí también */
+}
+
+.dropdown-header {
+    padding: 12px 16px;
+    background-color: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.dropdown-item {
+    padding: 12px 16px;
+    text-decoration: none;
+    color: #334155;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: background 0.2s;
+    font-size: 0.95rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.dropdown-item:hover { background-color: #eff6ff; color: #2563eb; }
+.logout-btn { color: #ef4444; }
+.logout-btn:hover { background-color: #fef2f2; color: #dc2626; }
+.dropdown-divider { height: 1px; background-color: #e2e8f0; margin: 4px 0; }
+
+/* =========================================
+   3. ESTILOS DEL POP-UP (MODAL)
+   ========================================= */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(3px);
+}
+
+.modal-content {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 450px; /* Un poco más ancho para que respire */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: slideDown 0.3s ease-out;
+    
+    /* 👇 AQUÍ ESTÁ LA MAGIA: Forzamos la fuente bonita */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #1e293b; /* Color oscuro suave */
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #94a3b8;
+    transition: color 0.2s;
+}
+
+.close-modal-btn:hover { color: #334155; }
+
+.modal-form .form-group { margin-bottom: 1.2rem; }
+
+.modal-form label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #475569;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+/* ESTILO DE LOS INPUTS Y SELECTS */
+.modal-form input,
+.modal-form select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit; /* Heredan la fuente del modal */
+    color: #334155;
+    background-color: #fff;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.modal-form input:focus,
+.modal-form select:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+/* BOTONES DEL MODAL */
+.modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 2rem;
+}
+
+.btn-save {
+    flex: 1;
+    background-color: #2563eb;
     color: white;
-    border-color: #ccc;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.btn-save:hover { background-color: #1d4ed8; }
+
+.btn-cancel {
+    flex: 1;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: none;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: background 0.2s;
+}
+
+.btn-cancel:hover { background-color: #e2e8f0; color: #334155; }
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }

@@ -1,45 +1,112 @@
-.search-bar-container {
-    display: flex;
-    gap: 1rem;
-    width: 95%;
-    /* Igual al max-width del Hero */
-    max-width: 1200px;
-    /* Un límite para pantallas gigantes */
-    padding: 1rem 0;
-    margin-top: 1rem;
-}
-
-.search-input-wrapper {
-    flex: 1;
-    /* Hace que los inputs tomen el espacio disponible */
-    position: relative;
-    /* Para poner el ícono dentro */
-}
-
-/* Estilo para los dos inputs */
-.search-input-wrapper input {
+.search-bar-wrapper {
     width: 100%;
-    padding: 0.9rem 1rem 0.9rem 2.5rem;
-    /* Espacio a la izq. para el ícono */
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    position: relative;
+    z-index: 10;
+    
+    /* 👇 CAMBIA ESTO: Pon un margen positivo para empujarla hacia abajo */
+    margin-top: 20px; 
+    margin-bottom: 20px; /* Un poco de espacio abajo también */
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 50px;
+    padding: 5px 5px 5px 25px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Sombra más suave y moderna */
+    width: 100%;
+    max-width: 800px; /* Un poco más ancho */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.search-form:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+}
+
+/* INPUT DE TEXTO */
+.search-input {
+    flex: 1.5;
+    border: none;
+    outline: none;
     font-size: 1rem;
-    box-sizing: border-box;
-    /* Para que el padding no afecte el ancho */
+    color: #334155;
+    padding: 10px;
+    
+    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Posición del ícono */
-.search-icon {
-    position: absolute;
-    left: 0.8rem;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #777;
-    /* Color gris del ícono */
+/* SELECTS (Distrito y Subtipo) */
+.search-select {
+    flex: 1;
+    border: none;
+    border-left: 1px solid #e2e8f0;
+    outline: none;
+    font-size: 0.95rem;
+    color: #475569;
+    padding: 10px 15px;
+    background-color: transparent;
+    cursor: pointer;
+    
+    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
-/* Hacemos el input de distrito más pequeño */
-.search-input-wrapper:last-child {
-    flex: 0 1 250px;
-    /* No crece, base de 250px */
+/* BOTÓN BUSCAR */
+.search-button {
+    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+    color: white;
+    border: none;
+    padding: 12px 35px;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    margin-left: 10px;
+    
+    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
+    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.search-button:hover {
+    opacity: 0.9;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .search-form {
+        flex-direction: column;
+        border-radius: 20px;
+        padding: 20px;
+        width: 90%;
+        margin-top: 0;
+    }
+
+    .search-select {
+        border-left: none;
+        border-top: 1px solid #e2e8f0;
+        width: 100%;
+        margin: 10px 0;
+        padding: 15px;
+    }
+    
+    .search-input {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .search-button {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+    }
 }

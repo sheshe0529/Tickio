@@ -225,7 +225,7 @@ const anySemantic = items.some(r => r.distance !== null && r.distance !== undefi
 const anyFTS = items.some(r => r.text_match === true);
 
 // Si no hay ni semántica ni FTS — devolvemos vacío
-if (!anySemantic && !anyFTS) {
+if (hasQ &&!anySemantic && !anyFTS) {
   console.log("No semantic nor FTS matches -> returning empty results to avoid returning whole table.");
   return res.json({ ok: true, count: 0, items: [] });
 }

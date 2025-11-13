@@ -1,5 +1,6 @@
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
+import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom'; // 1. Importamos el Router
 
 import App from './App'; // 2. Apuntamos al nuevo App.tsx
@@ -15,8 +16,10 @@ import './Login/Login.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter> {/* 3. Envolvemos la App con el BrowserRouter */}
-      <App />
-    </BrowserRouter>
+    <AuthProvider> 
+      <BrowserRouter>
+        <App />
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 );

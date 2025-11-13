@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react'; // 1. Importa useEffect
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import logoTickio from '/logo.png';
+
 
 // (Las interfaces RegisterErrors, ForgotErrors, ErrorState no cambian)
 interface RegisterErrors {
@@ -52,6 +55,8 @@ const initialForgotForm = {
 const initialErrors: ErrorState = { login: '', register: {}, forgot: {} };
 
 function Login({ defaultView = 'login' }: LoginProps) {
+  const navigate = useNavigate();
+  const { login } = useAuth();
   const [view, setView] = useState<LoginView>(defaultView);
   const [loading, setLoading] = useState(false);
 
@@ -125,19 +130,47 @@ function Login({ defaultView = 'login' }: LoginProps) {
     return re.test(String(email).toLowerCase());
   };
 
-  const handleLoginSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors(initialErrors);
-    //datos incompletos
+
+    // 1. Validar campos vacíos
     if (!loginForm.email || !loginForm.password) {
       return setErrors({ ...errors, login: 'Por favor, complete todos los campos.' });
     }
-    //data de admin
-    if (loginForm.email !== 'admin@tickio.com' || loginForm.password !== '123456') {
-      return setErrors({ ...errors, login: 'Correo o contraseña incorrectos.' });
+
+    setLoading(true); 
+
+    try {
+
+      const respuesta = await fetch("http://localhost:3000/usuarios/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          correo: loginForm.email,
+          contrasena: loginForm.password,
+        }),
+      });
+
+      const data = await respuesta.json();
+
+      if (!respuesta.ok) {
+        setLoading(false);
+        return setErrors({ ...errors, login: data.error || 'Error al iniciar sesión' });
+      }
+
+      // 3. Login Exitoso
+      console.log('Login Exitoso, Usuario:', data);
+      login(data);
+      navigate('/');
+      // Redirigir a donde necesites (ej: Home)
+      // navigate('/home'); 
+
+    } catch (error) {
+      console.error("Error de red:", error);
+      setLoading(false);
+      setErrors({ ...errors, login: 'Error de conexión con el servidor.' });
     }
-    //data de usuario cualquiera
-    console.log('Login Exitoso:', loginForm);
   };
 
   const handleRegisterSubmit = async (e: React.FormEvent) => {

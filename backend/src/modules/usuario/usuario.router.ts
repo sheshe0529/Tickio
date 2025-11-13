@@ -4,11 +4,13 @@ import {
     obtenerUsuarioPorId,
     listarUsuarios,
     actualizarUsuario,
-    eliminarUsuario
+    eliminarUsuario,
+    loginUsuario
 } from "./usuario.controller";
 
 const router = Router();
 
+router.post("/login", loginUsuario);
 router.post("/",crearUsuario);
 router.get("/:id",obtenerUsuarioPorId)
 router.get("/",listarUsuarios);
