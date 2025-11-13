@@ -19,7 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:5173" }));
 // Rutas base
-// app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
+ app.use('/usuarios', usuarioRouter); // Todas las rutas de usuario empiezan con /usuarios
 app.use('/compras', compraRouter);   // Todas las rutas de compra empiezan con /compras
 app.use("/eventos", eventoRouter); //CRUD EVENTOS
 app.use("/buscarEventos", searchRouter); //busqueda compleja de eventos

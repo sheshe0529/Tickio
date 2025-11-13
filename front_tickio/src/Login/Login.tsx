@@ -205,11 +205,11 @@ function Login({ defaultView = 'login' }: LoginProps) {
     if (!respuesta.ok) throw new Error("Error al registrar usuario");
 
     const data = await respuesta.json();
-    alert(`✅ Usuario ${data.nombre} registrado con éxito`);
+    alert(` Usuario ${data.nombre} registrado con éxito`);
     changeView("login"); // Redirige al login
   } catch (error) {
     console.error(error);
-    alert("❌ Error al conectar con el servidor");
+    alert(" Error al conectar con el servidor");
   }
     }
   };
@@ -279,6 +279,15 @@ function Login({ defaultView = 'login' }: LoginProps) {
       setLoading(false);
       setView('forgotSuccess');
     }, 1500);
+  };
+
+  const formatEnumName = (text: string) => {
+    if (!text) return "";
+    return text
+      .toLowerCase() // 1. Todo a minúsculas
+      .replace(/_/g, " ") // 2. Reemplazar guiones bajos por espacios
+      .replace(/\b\w/g, (l) => l.toUpperCase()) // 3. Capitalizar primera letra de cada palabra
+      .replace("Bre A", "Breña"); // 4. Caso especial para Breña si viene mal del back
   };
 
   const changeView = (newView: LoginView) => {
@@ -416,44 +425,64 @@ function Login({ defaultView = 'login' }: LoginProps) {
             <div className="form-group">
               <label htmlFor="distrito">Distrito</label>
               <select id="distrito" value={registerForm.distrito} onChange={handleRegisterChange}>
-                <option value="">Seleccione un evento</option>
+                <option value="">Seleccione su distrito</option>
                 {distritos.map((distrito) => (
                   <option key={distrito} value={distrito}>
-                    {distrito.replace('_', ' ')}
+                    {formatEnumName(distrito)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className="form-group">
-              <label htmlFor="event1">Evento favorito</label>
-              <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
-                <option value="">Seleccione un evento</option>
+              <label htmlFor="event1">Eventos favoritos</label>
+              <select id="event1" value={registerForm.event1 || ""} onChange={handleRegisterChange}>
+                <option value="">Seleccione una evento</option>
                 {eventos.map((evento) => (
-                  <option key={evento} value={evento}>
-                    {evento.replace('_', ' ')}
+                  <option 
+                    key={evento} 
+                    value={evento}
+                    // Deshabilitar si ya está seleccionado en el 2 o el 3
+                    disabled={registerForm.event2 === evento || registerForm.event3 === evento}
+                    style={{ color: (registerForm.event2 === evento || registerForm.event3 === evento) ? '#ccc' : 'inherit' }}
+                  >
+                    {formatEnumName(evento)}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* --- REEMPLAZAR BLOQUE EVENTO 2 --- */}
             <div className="form-group">
-              <select id="event2" value={registerForm.event2} onChange={handleRegisterChange}>
-                <option value="">Seleccione un evento</option>
+              <select id="event2" value={registerForm.event2 || ""} onChange={handleRegisterChange}>
+                <option value="">Seleccione una evento</option>
                 {eventos.map((evento) => (
-                  <option key={evento} value={evento}>
-                    {evento.replace('_', ' ')}
+                  <option 
+                    key={evento} 
+                    value={evento}
+                    // Deshabilitar si ya está seleccionado en el 1 o el 3
+                    disabled={registerForm.event1 === evento || registerForm.event3 === evento}
+                    style={{ color: (registerForm.event1 === evento || registerForm.event3 === evento) ? '#ccc' : 'inherit' }}
+                  >
+                    {formatEnumName(evento)}
                   </option>
                 ))}
               </select>
             </div>
 
+            {/* --- REEMPLAZAR BLOQUE EVENTO 3 --- */}
             <div className="form-group">
-              <select id="event3" value={registerForm.event3} onChange={handleRegisterChange}>
-                <option value="">Seleccione un evento</option>
+              <select id="event3" value={registerForm.event3 || ""} onChange={handleRegisterChange}>
+                <option value="">Seleccione una evento</option>
                 {eventos.map((evento) => (
-                  <option key={evento} value={evento}>
-                    {evento.replace('_', ' ')}
+                  <option 
+                    key={evento} 
+                    value={evento}
+                    // Deshabilitar si ya está seleccionado en el 1 o el 2
+                    disabled={registerForm.event1 === evento || registerForm.event2 === evento}
+                    style={{ color: (registerForm.event1 === evento || registerForm.event2 === evento) ? '#ccc' : 'inherit' }}
+                  >
+                    {formatEnumName(evento)}
                   </option>
                 ))}
               </select>
