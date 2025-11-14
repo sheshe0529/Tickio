@@ -1,86 +1,85 @@
 .search-bar-wrapper {
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    padding: 20px 0;
-    position: relative;
-    z-index: 10;
-    
-    /* 👇 CAMBIA ESTO: Pon un margen positivo para empujarla hacia abajo */
-    margin-top: 20px; 
-    margin-bottom: 20px; /* Un poco de espacio abajo también */
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 20px 0;
+  position: relative;
+  z-index: 10;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .search-form {
-    display: flex;
-    align-items: center;
-    background-color: #ffffff;
-    border-radius: 50px;
-    padding: 5px 5px 5px 25px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); /* Sombra más suave y moderna */
-    width: 100%;
-    max-width: 800px; /* Un poco más ancho */
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  align-items: center; /* Centra verticalmente */
+  background-color: #ffffff;
+  border-radius: 50px;
+  padding: 8px 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 800px;
 }
 
-.search-form:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-}
+/* --- ESTA ES LA CORRECCIÓN --- */
 
-/* INPUT DE TEXTO */
-.search-input {
-    flex: 1.5;
-    border: none;
-    outline: none;
-    font-size: 1rem;
-    color: #334155;
-    padding: 10px;
-    
-    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-}
-
-/* SELECTS (Distrito y Subtipo) */
+/* 1. Normalizamos TODOS los campos (inputs y selects) */
+.search-input,
 .search-select {
-    flex: 1;
-    border: none;
-    border-left: 1px solid #e2e8f0;
-    outline: none;
-    font-size: 0.95rem;
-    color: #475569;
-    padding: 10px 15px;
-    background-color: transparent;
-    cursor: pointer;
-    
-    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 0.95rem;
+  color: #475569;
+
+  /* Reseteo de apariencia */
+  appearance: none;
+  -webkit-appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  margin: 0;
+  box-sizing: border-box;
+
+  /* 👇 LA CLAVE: Padding vertical IDÉNTICO para todos (12px) */
+  padding-top: 12px;
+  padding-bottom: 12px;
+  padding-left: 15px; /* Espacio interno */
+  
+  height: auto; /* Dejamos que el padding defina la altura */
+  flex: 1; /* Todos flexibles */
 }
 
-/* BOTÓN BUSCAR */
+/* 2. Ancho especial para el primer input (texto) */
+.search-input[type="text"] {
+  flex: 1.5;
+  padding-left: 20px;
+}
+
+/* 3. Separadores sutiles */
+.search-select,
+.search-input[type="date"] {
+  border-left: 1px solid #e2e8f0;
+}
+
+/* 4. Botón (su padding vertical de 12px ya coincide) */
 .search-button {
-    background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-    color: white;
-    border: none;
-    padding: 12px 35px;
-    border-radius: 50px;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: opacity 0.2s;
-    margin-left: 10px;
-    
-    /* 👇 AQUÍ ESTÁ EL CAMBIO DE FUENTE */
-    font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    letter-spacing: 0.5px;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: white;
+  border: none;
+  
+  /* 👇 LA CLAVE: Padding vertical de 12px */
+  padding: 12px 35px; 
+  
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-left: 10px;
+  font-family: 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
-
 .search-button:hover {
-    opacity: 0.9;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  opacity: 0.9;
 }
 
-/* Responsividad */
+/* --- (Tu código responsive sigue igual) --- */
 @media (max-width: 768px) {
     .search-form {
         flex-direction: column;
@@ -90,7 +89,8 @@
         margin-top: 0;
     }
 
-    .search-select {
+    .search-select,
+    .search-input[type="date"] {
         border-left: none;
         border-top: 1px solid #e2e8f0;
         width: 100%;
