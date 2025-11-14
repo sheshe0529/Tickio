@@ -11,6 +11,8 @@ interface Usuario {
   tipo1?: string | null;   // 👈 Nuevo
   tipo2?: string | null;   // 👈 Nuevo
   tipo3?: string | null;   // 👈 Nuevo
+  RUC?: string | null; // 👈 AÑADE ESTO (para datos del organizador)
+  razon_social?: string | null; // 👈 AÑADE ESTO
   // Agrega más campos si los necesitas
 }
 

@@ -153,6 +153,23 @@ function Navbar() {
                     <Link to="/tickets" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
                        Mis Tickets
                     </Link>
+                    {user.rol === 'Organizador' && (
+                    <>
+                      <div className="dropdown-divider"></div>
+                      <div className="dropdown-header" style={{color: '#2563eb'}}>
+                        <strong>Panel de Organizador</strong>
+                      </div>
+                      <Link to="/organizar/eventos" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
+                        Mis Eventos
+                      </Link>
+                      <Link to="/organizar/crear" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
+                        Crear Evento
+                      </Link>
+                      <Link to="/organizar/reporte-general" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
+                        Reporte General
+                      </Link>
+                    </>
+                  )}
                     <div className="dropdown-divider"></div>
                     <button className="dropdown-item logout-btn" onClick={handleLogout}>
                       <FaSignOutAlt /> Cerrar Sesión

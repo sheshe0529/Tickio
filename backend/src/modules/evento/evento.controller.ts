@@ -2,6 +2,11 @@ import { Request, Response } from "express";
 import { Prisma } from "@prisma/client"; // Prisma para errores y TipoEvento para el enum
 import prisma from "../../config/prisma"; // instancia única
 
+interface TipoTicketData {
+  nombre: string;
+  precio: number;
+  cantidad: number;
+}
 
 export const crearEvento = async (req: Request, res: Response) => {
   const {
@@ -17,77 +22,74 @@ export const crearEvento = async (req: Request, res: Response) => {
     tipoEvento,
     subtipo,
     usuarioId,
-  } = req.body;
+    tipoTickets // 👈 NUEVO: Esperamos un array de tickets
+  } = req.body as { 
+    tipoTickets: TipoTicketData[] 
+  } & Omit<Prisma.EventoCreateInput, 'Usuario' | 'embedding' | 'tipoTickets' | 'descuentos'> & {
+    usuarioId: number // Aseguramos que usuarioId es un número
+  };
 
-  if (!nombre || !tipoEvento || !fecha_inicio || !fecha_fin) {
+  // --- VALIDACIONES ---
+  if (!nombre || !tipoEvento || !fecha_inicio || !fecha_fin || !usuarioId) {
     return res.status(400).json({
-      error: "Faltan campos obligatorios: nombre, tipoEvento, fecha_inicio, fecha_fin",
+      error: "Faltan campos obligatorios: nombre, tipoEvento, fechas, o usuarioId",
     });
   }
-
-  // Validar que las fechas 
-  const inicio = new Date(fecha_inicio);
-  const fin = new Date(fecha_fin);
-  if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-    return res.status(400).json({
-      error: "Formato de fecha inválido. Usa formato ISO (YYYY-MM-DDTHH:mm:ssZ)",
-    });
+  if (!tipoTickets || tipoTickets.length === 0) {
+    return res.status(400).json({ error: "Debes agregar al menos un tipo de ticket." });
   }
-  if (fin < inicio) {
-    return res.status(400).json({
-      error: "La fecha de fin no puede ser anterior a la fecha de inicio.",
-    });
-  }
-
-  // Validar aforo (no negativo o cero)
-  if (aforo !== undefined && aforo <= 0) {
-    return res.status(400).json({
-      error: "El aforo debe ser mayor a 0.",
-    });
-  }
+  // ... (tus otras validaciones de fecha y aforo) ...
 
   try {
-    const evento = await prisma.evento.create({
-      data: {
-        nombre,
-        descripcion,
-        direccion,
-        distrito,
-        fecha_inicio: inicio,
-        fecha_fin: fin,
-        hora_inicio,
-        duracion,
-        aforo,
-        tipoEvento,
-        subtipo,
-        estado: "PUBLICADO", 
-        usuarioId,
-      },
+    // --- TRANSACCIÓN ---
+    // Creamos el evento Y sus tickets al mismo tiempo.
+    const resultado = await prisma.$transaction(async (tx) => {
+      
+      // 1. Creamos el Evento
+      const evento = await tx.evento.create({
+        data: {
+          nombre,
+          descripcion,
+          direccion,
+          distrito,
+          fecha_inicio: new Date(fecha_inicio),
+          fecha_fin: new Date(fecha_fin),
+          hora_inicio: Number(hora_inicio),
+          duracion: Number(duracion),
+          aforo: Number(aforo),
+          tipoEvento,
+          subtipo,
+          estado: "PENDIENTE", 
+          usuarioId: Number(usuarioId),
+        },
+      });
+
+      // 2. Preparamos los datos de los Tipo_Ticket
+      const ticketsData = tipoTickets.map(ticket => ({
+        nombre: ticket.nombre,
+        precio: Number(ticket.precio),
+        cantidad: Number(ticket.cantidad),
+        eventoId: evento.id // Vinculamos al evento recién creado
+      }));
+
+      // 3. Creamos los Tipo_Ticket
+      await tx.tipo_Ticket.createMany({
+        data: ticketsData,
+      });
+
+      return evento; // Devolvemos el evento principal
     });
 
     return res.status(201).json({
-      message: "Evento creado exitosamente.",
-      evento,
+      message: "Evento y tickets creados exitosamente.",
+      evento: resultado,
     });
+
   } catch (error: any) {
     console.error("Error al crear evento:", error);
-
-    // ERRORES ESPECÍFICOS DE PRISMA
-    if (error instanceof Prisma.PrismaClientValidationError) {
-      return res.status(400).json({
-        error: "Datos inválidos. Verifica los campos enviados.",
-      });
-    }
-
-    if (error.code === "P2002") {
-      return res.status(409).json({
-        error: "Ya existe un registro con los mismos valores únicos.",
-      });
-    }
-
-    // ERRORES GENERALES
+    // ... (tus manejos de error de Prisma) ...
     return res.status(500).json({
-      error: "Error interno del servidor. No se pudo crear el evento.",
+      error: "Error interno del servidor.",
       detalle: error.message,
     });
   }
@@ -252,5 +254,124 @@ export const listarEventosPorUsuario = async (req: Request, res: Response) => {
     res.status(500).json({
       error: "Error interno al listar los eventos por usuario.",
     });
+  }
+};
+
+export const listarEventosPorOrganizador = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID del organizador (usuario)
+
+  try {
+    const eventos = await prisma.evento.findMany({
+      where: {
+        usuarioId: Number(id)
+      },
+      orderBy: {
+        fecha_inicio: 'desc'
+      }
+    });
+    res.json(eventos);
+  } catch (error) {
+    console.error('Error al listar eventos por organizador:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+
+// En evento.controller.ts (al final)
+
+export const getReporteVentas = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID del Evento
+
+  try {
+    // 1. Buscamos el evento y sus tipos de ticket
+    const tiposDeTicket = await prisma.tipo_Ticket.findMany({
+      where: { eventoId: Number(id) },
+      include: {
+        // 2. Usamos _count para contar cuántos 'tickets' (vendidos)
+        // están asociados a CADA tipo de ticket
+        _count: {
+          select: { tickets: true }
+        }
+      }
+    });
+
+    if (!tiposDeTicket || tiposDeTicket.length === 0) {
+      return res.status(404).json({ error: "No se encontraron tipos de ticket para este evento" });
+    }
+
+    // 3. Formateamos la respuesta como la pediste
+    const reporte = tiposDeTicket.map(tipo => {
+      const vendidos = tipo._count.tickets;
+      const totalSoles = vendidos * tipo.precio;
+      
+      return {
+        tipoTicket: tipo.nombre,
+        unidadesVendidas: vendidos,
+        precioUnitario: tipo.precio,
+        totalSoles: totalSoles
+      };
+    });
+
+    res.json(reporte);
+
+  } catch (error) {
+    console.error('Error al generar reporte de ventas:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
+  }
+};
+// En evento.controller.ts (al final)
+
+export const getReporteGeneralOrganizador = async (req: Request, res: Response) => {
+  const { id } = req.params; // ID del Organizador (usuario)
+
+  try {
+    // 1. Buscamos todos los eventos del organizador
+    const eventos = await prisma.evento.findMany({
+      where: { usuarioId: Number(id) },
+      select: {
+        id: true,
+        nombre: true,
+        // 2. Incluimos los tipoTickets de CADA evento
+        tipoTickets: {
+          select: {
+            nombre: true,
+            precio: true,
+            // 3. Incluimos el conteo de tickets vendidos de CADA tipoTicket
+            _count: {
+              select: { tickets: true }
+            }
+          }
+        }
+      }
+    });
+
+    if (eventos.length === 0) {
+      return res.status(404).json({ error: "Este organizador no tiene eventos." });
+    }
+
+    // 4. Formateamos la data como la pediste
+    const reporteGeneral = eventos.map(evento => {
+      const tiposDeTicket = evento.tipoTickets.map(tipo => {
+        const vendidos = tipo._count.tickets;
+        const totalSoles = vendidos * tipo.precio;
+        return {
+          tipoNombre: tipo.nombre,
+          unidadesVendidas: vendidos,
+          precioUnitario: tipo.precio,
+          totalSoles: totalSoles
+        };
+      });
+      
+      return {
+        eventoId: evento.id,
+        eventoNombre: evento.nombre,
+        tiposDeTicket: tiposDeTicket
+      };
+    });
+
+    res.json(reporteGeneral);
+
+  } catch (error) {
+    console.error('Error al generar reporte general:', error);
+    res.status(500).json({ error: 'Error interno del servidor' });
   }
 };

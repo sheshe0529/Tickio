@@ -12,6 +12,11 @@ import PasarelaPage from './Pasarela/Pasarela';
 import ConfirmacionPage from './Confirmacion/Confirmacion';
 import TicketsPage from './Tickets/TicketsPage';
 
+import CrearEventoPage from './Organizador/CrearEventoPage';
+import MisEventosPage from './Organizador/MisEventosPage';
+import ReporteVentasPage from './Organizador/ReporteVentasPage';
+import ReporteGeneralPage from './Organizador/ReporteGeneralPage';
+
 function App() {
   return (
     <Routes>
@@ -25,6 +30,11 @@ function App() {
         <Route path="pasarela" element={<PasarelaPage />} />
         <Route path="confirmacion" element={<ConfirmacionPage />} />
         <Route path="tickets" element={<TicketsPage />} /> 
+
+        <Route path="/organizar/crear" element={<CrearEventoPage />} />
+        <Route path="/organizar/eventos" element={<MisEventosPage />} />
+        <Route path="/organizar/reporte/:id" element={<ReporteVentasPage />} />
+        <Route path="/organizar/reporte-general" element={<ReporteGeneralPage />} />
       </Route>
     </Routes>
   );
