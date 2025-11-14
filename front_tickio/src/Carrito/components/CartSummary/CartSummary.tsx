@@ -1,9 +1,10 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { type CartItem } from '../../../context/CartContext';import './CartSummary.css';
+import { type CartItem } from '../../../context/CartContext'; // 👈 1. Importamos el TIPO real
+import './CartSummary.css';
 
 type CartSummaryProps = {
-  items: CartItem[]; // 👈 2. Usamos el tipo real
+  items: CartItem[]; // 👈 2. Usamos el TIPO real
   hideTitle?: boolean;
   hidePaymentMethods?: boolean;
 };
@@ -29,10 +30,10 @@ function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: C
       
       <div className="summary-list">
         <h4>Lista de Productos</h4>
-        {/* 4. Mapeamos los datos reales */}
         {items.map(item => (
           <div key={item.ticketId} className="summary-item">
-            <span>{item.quantity}x {item.ticketName}</span>
+            {/* 4. Mostramos los datos reales */}
+            <span>{item.quantity}x {item.ticketName}</span> 
             <span>S/. {(item.price * item.quantity).toFixed(2)}</span>
           </div>
         ))}
@@ -58,13 +59,10 @@ function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: C
           <div className="summary-payment">
             <h4>Métodos de Pago</h4>
             <div className="payment-icons">
-              {/* (Aquí irían tus íconos de Visa, Mastercard, etc.) */}
-              <div className="payment-icon-placeholder"></div>
               <div className="payment-icon-placeholder"></div>
               <div className="payment-icon-placeholder"></div>
             </div>
           </div>
-
           <button className="summary-checkout-button" onClick={handleCheckout}>
             Proceder con el Pago
           </button>

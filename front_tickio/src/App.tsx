@@ -9,7 +9,7 @@ import Layout from './components/Layout';
 import Home from './Home/Home';
 import CarritoPage from './Carrito/Carrito';
 import PasarelaPage from './Pasarela/Pasarela';
-import ConfirmacionPage from './Confirmacion/Confrimacion';
+import ConfirmacionPage from './Confirmacion/Confirmacion';
 
 function App() {
   return (
