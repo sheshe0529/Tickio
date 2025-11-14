@@ -10,6 +10,7 @@ import Home from './Home/Home';
 import CarritoPage from './Carrito/Carrito';
 import PasarelaPage from './Pasarela/Pasarela';
 import ConfirmacionPage from './Confirmacion/Confirmacion';
+import TicketsPage from './Tickets/TicketsPage';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Route path="carrito" element={<CarritoPage />} />
         <Route path="pasarela" element={<PasarelaPage />} />
         <Route path="confirmacion" element={<ConfirmacionPage />} />
+        <Route path="tickets" element={<TicketsPage />} /> 
       </Route>
     </Routes>
   );

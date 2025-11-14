@@ -150,7 +150,7 @@ function Navbar() {
                     <button className="dropdown-item" onClick={handleOpenModal}>
                       <FaUserEdit /> Editar Perfil
                     </button>
-                    <Link to="/mis-compras" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
+                    <Link to="/tickets" className="dropdown-item" onClick={() => setMenuAbierto(false)}>
                        Mis Tickets
                     </Link>
                     <div className="dropdown-divider"></div>
