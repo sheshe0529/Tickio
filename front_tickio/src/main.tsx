@@ -2,6 +2,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { AuthProvider } from './context/AuthContext';
 import { BrowserRouter } from 'react-router-dom'; // 1. Importamos el Router
+import { CartProvider } from './context/CartContext'
 
 import App from './App'; // 2. Apuntamos al nuevo App.tsx
 
@@ -17,9 +18,11 @@ import './Login/Login.css';
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <AuthProvider> 
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <CartProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </CartProvider>
     </AuthProvider>
   </StrictMode>,
 );

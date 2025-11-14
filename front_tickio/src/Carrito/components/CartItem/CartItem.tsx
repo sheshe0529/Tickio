@@ -1,17 +1,9 @@
 import React from 'react';
-import './CartItem.css';
+import { useCart, type CartItem as CartItemType } from '../../../context/CartContext';import './CartItem.css';
+import { FaTrash } from 'react-icons/fa'; // Un ícono más limpio
 
 type CartItemProps = {
-  item: {
-    id: number;
-    title: string;
-    date: string;
-    time: string;
-    location: string;
-    tag: string;
-    price: number;
-    quantity: number;
-  };
+  item: CartItemType; // 👈 2. Usamos el tipo real del Contexto
   onQuantityChange: (id: number, newQuantity: number) => void;
   onRemove: (id: number) => void;
 };
@@ -20,32 +12,39 @@ function CartItem({ item, onQuantityChange, onRemove }: CartItemProps) {
   
   const handleDecrease = () => {
     if (item.quantity > 1) {
-      onQuantityChange(item.id, item.quantity - 1);
+      onQuantityChange(item.ticketId, item.quantity - 1);
     }
   };
 
   const handleIncrease = () => {
-    onQuantityChange(item.id, item.quantity + 1);
+    // 3. Validamos contra el stock real que guardamos
+    if (item.quantity < item.stock) {
+      onQuantityChange(item.ticketId, item.quantity + 1);
+    } else {
+      alert(`Stock máximo alcanzado (${item.stock})`);
+    }
   };
 
   return (
     <div className="cart-item-card">
-      <div className="cart-item-selection">
-        <input type="checkbox" />
-      </div>
       <div className="cart-item-details">
-        <h3>{item.title}</h3>
-        <p>{item.date} - {item.time}</p>
-        <p>{item.location}</p>
+        {/* 4. Mostramos los datos reales del contexto */}
+        <h3>{item.eventoName}</h3>
+        <p>Ticket: {item.ticketName}</p>
+        <p>Precio: S/ {item.price.toFixed(2)} c/u</p>
       </div>
       <div className="cart-item-controls">
-        <span className="item-tag">{item.tag}</span>
         <div className="quantity-controls">
           <button onClick={handleDecrease}>-</button>
           <span>{item.quantity}</span>
-          <button onClick={handleIncrease}>+</button>
+          <button onClick={handleIncrease} disabled={item.quantity >= item.stock}>+</button>
         </div>
-        <span className="item-price">S/. {item.price.toFixed(2)}</span>
+        <span className="item-price">
+          S/ {(item.price * item.quantity).toFixed(2)}
+        </span>
+        <button className="remove-item-btn" onClick={() => onRemove(item.ticketId)}>
+          <FaTrash />
+        </button>
       </div>
     </div>
   );

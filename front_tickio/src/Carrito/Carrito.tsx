@@ -1,71 +1,68 @@
-import React, { useState } from 'react';
-import './Carrito.css'; // Importa el CSS con el nuevo nombre
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useCart } from '../context/CartContext'; // 👈 1. Importamos el Contexto
+import './Carrito.css';
 import CartItem from './components/CartItem/CartItem';
 import CartSummary from './components/CartSummary/CartSummary';
 
-const initialItems = [
-  {
-    id: 1,
-    title: 'Universitario vs Alianza Lima',
-    date: '11/09/2025',
-    time: '16:00 h',
-    location: 'Lima - Estadio Monumental de Lima',
-    tag: 'General',
-    price: 30,
-    quantity: 1,
-  },
-  {
-    id: 2,
-    title: 'Sporting Cristal vs UTC',
-    date: '12/09/2025',
-    time: '15:00 h',
-    location: 'Lima - Estadio Alberto Gallardo',
-    tag: 'General',
-    price: 50,
-    quantity: 2,
-  },
-];
+function CarritoPage() {
+  const navigate = useNavigate();
 
-function CarritoPage() { // Renombramos la función
-  const [cartItems, setCartItems] = useState(initialItems);
+  // 2. Leemos los datos y funciones reales del Contexto
+  const { 
+    cartItems, 
+    updateQuantity, 
+    removeFromCart, 
+    clearCart, 
+    totalItems 
+  } = useCart();
 
-  const handleQuantityChange = (id: number, newQuantity: number) => {
-    setCartItems(currentItems =>
-      currentItems.map(item =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
+  // 3. Botón "Volver" (si lo quieres usar)
+  const handleGoBack = () => {
+    navigate(-1); // Vuelve a la página anterior
+  };
+
+  // 4. Si el carrito está vacío
+  if (cartItems.length === 0) {
+    return (
+      <div className="cart-page-container empty-cart">
+        <h2>Tu carrito está vacío</h2>
+        <p>No has agregado ningún ticket todavía.</p>
+        <button onClick={() => navigate('/')} className="back-button">
+          &larr; Buscar Eventos
+        </button>
+      </div>
     );
-  };
-
-  const handleRemoveItem = (id: number) => {
-    setCartItems(currentItems => currentItems.filter(item => item.id !== id));
-  };
-  
-  const totalItemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  }
 
   return (
     <div className="cart-page-container">
       <div className="cart-header">
-        <h2>Lista de Entradas ({totalItemCount})</h2>
-        <button className="delete-all-button">
-          Eliminar <span className="trash-icon">🗑️</span>
+        {/* Usamos el total real del contexto */}
+        <h2>Lista de Entradas ({totalItems})</h2>
+        <button className="delete-all-button" onClick={clearCart}>
+          Eliminar Todo <span className="trash-icon">🗑️</span>
         </button>
       </div>
 
       <div className="cart-layout">
         <div className="cart-items-list">
+          {/* 5. Mapeamos los items reales del carrito */}
           {cartItems.map(item => (
             <CartItem
-              key={item.id}
+              key={item.ticketId}
               item={item}
-              onQuantityChange={handleQuantityChange}
-              onRemove={handleRemoveItem}
+              onQuantityChange={updateQuantity} // Pasamos la función real
+              onRemove={removeFromCart}       // Pasamos la función real
             />
           ))}
-          <button className="back-button">&lt; Volver</button>
+          <button className="back-button" onClick={handleGoBack}>
+            &larr; Volver
+          </button>
         </div>
         
         <div className="cart-summary-sidebar">
+          {/* Pasamos los items reales al resumen */}
           <CartSummary items={cartItems} />
         </div>
       </div>
@@ -73,4 +70,4 @@ function CarritoPage() { // Renombramos la función
   );
 }
 
-export default CarritoPage; // Exportamos la función con el nuevo nombre
+export default CarritoPage;

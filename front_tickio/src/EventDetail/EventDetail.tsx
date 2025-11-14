@@ -1,105 +1,170 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { useCart } from '../context/CartContext';
 import './EventDetail.css';
 
-// (Importaremos los íconos)
-import { FaCalendar, FaClock, FaMap, FaMapMarkerAlt } from 'react-icons/fa';
-import { fakeEventData } from '../data/mockData';
-
+// 1. 👈 Importamos el nuevo ícono para la duración
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaHourglassHalf } from 'react-icons/fa';
 import TicketSelector from './components/TicketSelector/TicketSelector';
 
+// 2. 👈 Actualizamos la Interfaz para incluir la 'duracion'
+interface TipoTicket {
+  id: number;
+  nombre: string;
+  precio: number;
+  cantidad: number;
+}
+
+interface EventoDetalle {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  hora_inicio: number;
+  duracion: number; // 👈 Campo añadido
+  distrito: string;
+  direccion: string;
+  tipoTickets: TipoTicket[];
+}
+
 function EventDetail() {
-  const { id } = useParams(); // Leemos el ID (ej: "3")
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { cartItems } = useCart();
+  const [event, setEvent] = useState<EventoDetalle | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  // 2. Creamos un "estado" para guardar el evento que encontremos
-  const [event, setEvent] = useState<any>(null); // (Usamos 'any' por ahora)
-
-  // 3. Este "efecto" se ejecuta CADA VEZ que el 'id' de la URL cambia
   useEffect(() => {
-    // Buscamos en nuestra base de datos falsa el evento con ese id
-    const foundEvent = fakeEventData.find(e => e.id === id);
+    const fetchEvent = async () => {
+      try {
+        setLoading(true);
+        const res = await fetch(`http://localhost:3000/eventos/${id}`);
+        if (!res.ok) {
+          throw new Error('Evento no encontrado');
+        }
+        const data = await res.json();
+        setEvent(data);
+      } catch (error) {
+        console.error(error);
+        setEvent(null);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    if (foundEvent) {
-      setEvent(foundEvent); // ¡Lo encontramos! Lo guardamos en el estado
-    } else {
-      // (En el futuro, aquí redirigiríamos a una página de "No Encontrado")
-      console.log("¡Evento no encontrado!");
-      setEvent(null);
-    }
-  }, [id]); // El [id] le dice que se ejecute de nuevo si el ID cambia
+    fetchEvent();
+  }, [id]);
 
-  // 4. Mostramos un "Cargando..." si aún no lo encontramos
-  if (!event) {
-    return (
-      <div className="event-detail-page">
-        <Link to="/" className="back-button">&larr; Volver</Link>
-        <h2>Cargando evento... (o no encontrado)</h2>
-      </div>
-    );
+  // --- Funciones de Formato ---
+
+  const formatDistrito = (text: string) => {
+    if (!text) return "";
+    if (text === "BRE_A") return "Breña";
+    return text.toLowerCase().replace(/_/g, " ").replace(/\b\w/g, (l) => l.toUpperCase());
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', { 
+      weekday: 'long', 
+      day: 'numeric', 
+      month: 'long' 
+    });
+  };
+
+  const formatTime = (time: number) => {
+    // Asumiendo que 'hora_inicio' es la hora (ej: 19)
+    return `${time}:00`; 
+  };
+  
+  // 3. 👈 Nueva función para convertir minutos a horas/minutos
+  const formatDuration = (minutes: number) => {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+    let result = '';
+    if (h > 0) result += `${h} ${h > 1 ? 'horas' : 'hora'} `;
+    if (m > 0) result += `${m} minutos`;
+    return result.trim();
+  };
+
+  // --- Renderizado ---
+  if (loading) {
+    return <div className="event-detail-page"><h2>Cargando evento...</h2></div>;
   }
 
-  // 5. ¡AHORA SÍ! Reemplazamos el texto "a fuego" por el del 'event'
+  if (!event) {
+    return <div className="event-detail-page"><h2>Evento no encontrado</h2></div>;
+  }
+
+  // 4. 👈 Preparamos la URL para el mapa
+  const mapQuery = `${event.direccion}, ${formatDistrito(event.distrito)}, Lima, Peru`;
+  const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+
   return (
     <div className="event-detail-page">
-      <Link to="/" className="back-button">
-        &larr; Volver
-      </Link>
+      <div className="back-button-container">
+        <Link to="/" className="back-button">&larr; Volver</Link>
+      </div>
 
       <div className="event-detail-container">
-        {/* --- COLUMNA IZQUIERDA (DINÁMICA) --- */}
+        {/* --- COLUMNA IZQUIERDA --- */}
         <div className="event-detail-left">
           <img
-            src={event.mainImage}
-            alt={event.title}
+            src="/placeholder-evento.jpg" 
+            alt={event.nombre}
             className="event-main-image"
           />
           <div className="location-card">
-            <div className="location-header">
-              <FaMap />
-              <h3>Ubicación</h3>
-            </div>
-
-            {/* --- NUEVA ESTRUCTURA PARA LA DIRECCIÓN --- */}
-            <div className="location-address">
-              <FaMapMarkerAlt />
-              <p>{event.location}</p>
-            </div>
-
-            <img
-              src={event.mapImage}
-              alt="Mapa del Estadio"
-              className="stadium-map-image"
-            />
+            <h3><FaMapMarkerAlt /> Ubicación</h3>
+            <p>{event.direccion}</p>
+            <p><strong>{formatDistrito(event.distrito)}</strong>, Lima</p>
+            
+            {/* 5. 👈 Reemplazamos la imagen estática por el <iframe> de Google Maps */}
+            <iframe
+              src={mapSrc}
+              width="100%"
+              height="300"
+              style={{ border: 0, borderRadius: '8px', marginTop: '1rem' }}
+              allowFullScreen={false}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
           </div>
         </div>
 
-        {/* --- COLUMNA DERECHA (DINÁMICA) --- */}
+        {/* --- COLUMNA DERECHA --- */}
         <div className="event-detail-right">
-          <h2>{event.title}</h2>
+          <h2>{event.nombre}</h2>
 
+          {/* 6. 👈 Añadimos la duración formateada */}
           <div className="event-info">
-            <span><FaCalendar /> {event.date}</span>
-            <span><FaClock /> {event.time}</span>
+            <span><FaCalendarAlt /> {formatDate(event.fecha_inicio)}</span>
+            <span><FaClock /> {formatTime(event.hora_inicio)}</span>
+            <span><FaHourglassHalf /> {formatDuration(event.duracion)}</span>
           </div>
 
           <div className="event-description">
             <h3>Descripción</h3>
-            <p>{event.description}</p>
+            <p>{event.descripcion}</p>
           </div>
 
           <div className="ticket-zones">
             <h3>Zonas del estadio</h3>
-
-            {/* Reemplazamos el <p> por un .map() */}
-            {event.zones.map((zone: any) => (
-              <TicketSelector key={zone.id} zone={zone} />
+            {event.tipoTickets.map((ticket) => (
+              <TicketSelector 
+                key={ticket.id} 
+                ticket={ticket} 
+                evento={{ id: event.id, nombre: event.nombre }}
+              />
             ))}
-
           </div>
 
-          <button className="cart-button">
-            Ir al carrito
-          </button>
+          {cartItems.length > 0 && (
+            <button className="cart-button-main" onClick={() => navigate('/carrito')}>
+              Ir al carrito ({cartItems.length} tipos)
+            </button>
+          )}
         </div>
       </div>
     </div>

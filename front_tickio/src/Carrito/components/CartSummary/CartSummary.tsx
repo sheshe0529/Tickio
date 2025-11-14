@@ -1,16 +1,9 @@
 import React, { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './CartSummary.css';
-
-type Item = {
-  id: number;
-  title: string;
-  price: number;
-  quantity: number;
-};
+import { type CartItem } from '../../../context/CartContext';import './CartSummary.css';
 
 type CartSummaryProps = {
-  items: Item[];
+  items: CartItem[]; // 👈 2. Usamos el tipo real
   hideTitle?: boolean;
   hidePaymentMethods?: boolean;
 };
@@ -18,9 +11,10 @@ type CartSummaryProps = {
 function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: CartSummaryProps) {
   const navigate = useNavigate();
 
+  // 3. El cálculo de total (tu lógica de IGV es genial, la mantenemos)
   const { subtotal, igv, total } = useMemo(() => {
     const sub = items.reduce((acc, item) => acc + (item.price * item.quantity), 0);
-    const igv = sub * 0.18;
+    const igv = sub * 0.18; // 18% IGV
     const total = sub + igv;
     return { subtotal: sub, igv: igv, total: total };
   }, [items]);
@@ -35,9 +29,10 @@ function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: C
       
       <div className="summary-list">
         <h4>Lista de Productos</h4>
+        {/* 4. Mapeamos los datos reales */}
         {items.map(item => (
-          <div key={item.id} className="summary-item">
-            <span>{item.title}</span>
+          <div key={item.ticketId} className="summary-item">
+            <span>{item.quantity}x {item.ticketName}</span>
             <span>S/. {(item.price * item.quantity).toFixed(2)}</span>
           </div>
         ))}
@@ -49,7 +44,7 @@ function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: C
           <span>S/. {subtotal.toFixed(2)}</span>
         </div>
         <div className="summary-line">
-          <span>IGV</span>
+          <span>IGV (18%)</span>
           <span>S/. {igv.toFixed(2)}</span>
         </div>
         <div className="summary-line total-line">
@@ -63,7 +58,7 @@ function CartSummary({ items, hideTitle = false, hidePaymentMethods = false }: C
           <div className="summary-payment">
             <h4>Métodos de Pago</h4>
             <div className="payment-icons">
-              <div className="payment-icon-placeholder"></div>
+              {/* (Aquí irían tus íconos de Visa, Mastercard, etc.) */}
               <div className="payment-icon-placeholder"></div>
               <div className="payment-icon-placeholder"></div>
               <div className="payment-icon-placeholder"></div>
