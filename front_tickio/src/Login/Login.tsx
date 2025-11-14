@@ -202,7 +202,19 @@ function Login({ defaultView = 'login' }: LoginProps) {
       }),
     });
 
-    if (!respuesta.ok) throw new Error("Error al registrar usuario");
+    if (!respuesta.ok) {
+      const errorData = await respuesta.json();
+
+      if (respuesta.status === 409) {
+        alert(`⚠️ ${errorData.error}`); // "El correo ya está registrado"
+      } else if (respuesta.status === 400) {
+        alert(`⚠️ ${errorData.error}`); // "Faltan campos obligatorios"
+      } else {
+        alert(`❌ Error: ${errorData.error || "Error al registrar usuario"}`);
+      }
+
+      return; // Detiene el flujo
+    }
 
     const data = await respuesta.json();
     alert(`✅ Usuario ${data.nombre} registrado con éxito`);

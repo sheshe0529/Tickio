@@ -47,10 +47,21 @@ export const crearUsuario = async(req: Request, res: Response) =>
     });
 
     res.json(usuario);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: "Error al crear usuario" });
+//  } catch (error) {
+//    console.error(error);
+//    res.status(500).json({ error: "Error al crear usuario" });
+//  }
+  } catch (error: any) {
+  console.error(error);
+
+  // Error Prisma: campo único duplicado (correo repetido)
+  if (error.code === 'P2002' && error.meta?.target?.includes('correo')) {
+    return res.status(409).json({ error: 'El correo ya está registrado' });
   }
+
+  // Cualquier otro error general
+  res.status(500).json({ error: 'Error al crear usuario' });
+}
 };
 
 
