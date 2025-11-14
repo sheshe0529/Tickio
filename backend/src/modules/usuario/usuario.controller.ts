@@ -9,46 +9,34 @@ export const crearUsuario = async(req: Request, res: Response) =>
 {
   try {
     const {
-      nombre,
-      correo,
-      contrasena,
-      telefono,
-      rol,
-      Activa,
-      tipo1,
-      tipo2,
-      tipo3,
-      RUC,
-      razon_social,
-      distrito
+      nombre, correo, contrasena, telefono, rol, Activa,
+      tipo1, tipo2, tipo3, RUC, razon_social, distrito
     } = req.body;
 
-    // Validar campos obligatorios
-    /*if (!nombre || !correo || !contrasena || !telefono ||
-        !tipo1 || !tipo2 || !tipo3) {
-      return res.status(400).json({ error: "Faltan campos obligatorios" });
-    }*/
+    // --- VERIFICACIÓN AÑADIDA ---
+    // 1. Buscamos si el correo ya existe
+    const existingUser = await prisma.usuario.findUnique({
+      where: { correo: correo },
+    });
 
+    // 2. Si existe, enviamos un error 409 (Conflicto)
+    if (existingUser) {
+      return res.status(409).json({ error: "El correo ya está registrado" });
+    }
+    // --- FIN DE LA VERIFICACIÓN ---
+
+    // 3. Si no existe, procedemos a crearlo
     const usuario = await prisma.usuario.create({
       data: {
-        nombre,
-        correo,
-        contrasena,
-        telefono,
-        rol,
-        Activa,
-        tipo1,
-        tipo2,
-        tipo3,
-        RUC,
-        razon_social,
-      distrito
+        nombre, correo, contrasena, telefono, rol, Activa,
+        tipo1, tipo2, tipo3, RUC, razon_social, distrito
       },
     });
 
     res.json(usuario);
   } catch (error) {
     console.error(error);
+    // Error genérico por si falla otra cosa
     res.status(500).json({ error: "Error al crear usuario" });
   }
 };
@@ -173,3 +161,56 @@ export const loginUsuario = async (req: Request, res: Response) => {
   }
 };
 
+export const getRecomendaciones = async (req: Request, res: Response) => {
+  const { usuarioId } = req.query;
+
+  try {
+    const where: any = {
+      fecha_inicio: { gte: new Date() } // Solo eventos futuros
+    };
+
+    let preferencias: string[] = [];
+
+    // 1. Si tenemos un usuario, buscamos sus gustos
+    if (usuarioId) {
+      const usuario = await prisma.usuario.findUnique({
+        where: { id: Number(usuarioId) },
+        select: { tipo1: true, tipo2: true, tipo3: true }
+      });
+      
+      if (usuario) {
+        preferencias = [usuario.tipo1, usuario.tipo2, usuario.tipo3].filter(Boolean) as string[];
+      }
+    }
+
+    // 2. Si hay gustos, los añadimos al filtro
+    if (preferencias.length > 0) {
+      where.tipoEvento = { in: preferencias };
+    }
+    
+    // 3. Buscamos eventos que coincidan
+    let eventos = await prisma.evento.findMany({
+      where: where,
+      take: 3 // Queremos solo 3
+    });
+
+    // 4. Si no encontramos 3 (o no había gustos), rellenamos con cualquiera
+    if (eventos.length < 3) {
+      const idsExcluir = eventos.map(e => e.id);
+      const eventosRelleno = await prisma.evento.findMany({
+        where: {
+          fecha_inicio: { gte: new Date() },
+          id: { notIn: idsExcluir } // Que no sean los que ya tenemos
+        },
+        take: 3 - eventos.length // Solo los que faltan
+      });
+      eventos = [...eventos, ...eventosRelleno];
+    }
+    
+    res.json(eventos);
+
+  } catch (error) {
+    console.error("Error en recomendaciones:", error);
+    res.status(500).json({ error: "Error al obtener recomendaciones" });
+  }
+};

@@ -7,6 +7,21 @@ import './EventDetail.css';
 import { FaCalendarAlt, FaClock, FaMapMarkerAlt, FaHourglassHalf } from 'react-icons/fa';
 import TicketSelector from './components/TicketSelector/TicketSelector';
 
+const getGenericImage = (tipoEvento?: string) => {
+  switch (tipoEvento) {
+    case 'CONCIERTO':
+      return 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?ixlib=rb-4.0.3&q=80&w=1920&h=1080&fit=crop';
+    case 'DEPORTE':
+      return 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?ixlib=rb-4.0.3&q=80&w=1920&h=1080&fit=crop';
+    case 'TEATRO':
+      return 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?ixlib=rb-4.0.3&q=80&w=1920&h=1080&fit=crop';
+    case 'TRENDING':
+      return 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?ixlib=rb-4.0.3&q=80&w=1920&h=1080&fit=crop';
+    default:
+      return 'https://images.unsplash.com/photo-1523580494863-6f3031224c94?ixlib=rb-4.0.3&q=80&w=1920&h=1080&fit=crop';
+  }
+};
+
 // 2. 👈 Actualizamos la Interfaz para incluir la 'duracion'
 interface TipoTicket {
   id: number;
@@ -22,16 +37,18 @@ interface EventoDetalle {
   fecha_inicio: string;
   fecha_fin: string;
   hora_inicio: number;
-  duracion: number; // 👈 Campo añadido
+  duracion: number; 
   distrito: string;
   direccion: string;
+  tipoEvento: string; // 👈 NECESITAMOS ESTE CAMPO
   tipoTickets: TipoTicket[];
+  imagen?: string; // (Lo dejamos por si en el futuro sí usas el schema)
 }
 
 function EventDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { cartItems } = useCart();
+  const { cartItems } = useCart(); 
   const [event, setEvent] = useState<EventoDetalle | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,7 +56,8 @@ function EventDetail() {
     const fetchEvent = async () => {
       try {
         setLoading(true);
-        const res = await fetch(`http://localhost:3000/eventos/${id}`);
+        // Asumimos que esta ruta devuelve el evento completo, incluyendo 'tipoEvento'
+        const res = await fetch(`http://localhost:3000/eventos/${id}`); 
         if (!res.ok) {
           throw new Error('Evento no encontrado');
         }
@@ -100,29 +118,24 @@ function EventDetail() {
   // 4. 👈 Preparamos la URL para el mapa
   const mapQuery = `${event.direccion}, ${formatDistrito(event.distrito)}, Lima, Peru`;
   const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-
+  const imageUrl = event.imagen || getGenericImage(event.tipoEvento);
   return (
     <div className="event-detail-page">
       <div className="back-button-container">
         <Link to="/" className="back-button">&larr; Volver</Link>
       </div>
-
+      <div className="event-header-image" style={{ backgroundImage: `url(${imageUrl})` }}>
+      </div>
       <div className="event-detail-container">
         {/* --- COLUMNA IZQUIERDA --- */}
         <div className="event-detail-left">
-          <img
-            src="/placeholder-evento.jpg" 
-            alt={event.nombre}
-            className="event-main-image"
-          />
           <div className="location-card">
             <h3><FaMapMarkerAlt /> Ubicación</h3>
             <p>{event.direccion}</p>
             <p><strong>{formatDistrito(event.distrito)}</strong>, Lima</p>
             
-            {/* 5. 👈 Reemplazamos la imagen estática por el <iframe> de Google Maps */}
             <iframe
-              src={mapSrc}
+              src={`https://maps.google.com/maps?q=$${encodeURIComponent(event.direccion + ', ' + event.distrito)}&t=&z=15&ie=UTF8&iwloc=&output=embed`}
               width="100%"
               height="300"
               style={{ border: 0, borderRadius: '8px', marginTop: '1rem' }}

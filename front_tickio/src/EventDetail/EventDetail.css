@@ -17,14 +17,27 @@
   font-weight: 600;
 }
 
+.event-header-image {
+  width: 100%;
+  height: 350px; /* Ajusta la altura del banner como prefieras */
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+/* Contenedor principal de 2 columnas */
 .event-detail-container {
   display: flex;
+  flex-wrap: wrap; /* Para móviles */
   gap: 2.5rem;
 }
 
-/* Columna Izquierda */
+/* Columna Izquierda (Ubicación) */
 .event-detail-left {
   flex: 1;
+  min-width: 300px;
 }
 
 .event-main-image {
@@ -63,13 +76,11 @@
 /* Columna Derecha */
 .event-detail-right {
   flex: 1.5;
+  min-width: 300px;
 }
 
 .event-detail-right h2 {
-  font-size: 2.5rem;
-  font-weight: 700;
   margin-top: 0;
-  color: #111827;
 }
 
 .event-info {

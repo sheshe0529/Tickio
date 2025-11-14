@@ -24,7 +24,9 @@ function Home() {
   const [filtros, setFiltros] = useState({
     q: '',          // Texto
     distrito: '',   // Distrito
-    tipo: ''        // Categoría
+    tipo: '',        // Categoría
+    fechaInicio: '', // 👈 AÑADE ESTO
+    fechaFin: ''     // 👈 AÑADE ESTO
   });
 
   // 1. Se ejecuta automáticamente cuando cambia cualquier filtro
@@ -40,6 +42,8 @@ function Home() {
       if (filtros.q) params.append('q', filtros.q);
       if (filtros.distrito) params.append('distrito', filtros.distrito);
       if (filtros.tipo) params.append('tipo', filtros.tipo);
+      if (filtros.fechaInicio) params.append('desde', filtros.fechaInicio);
+      if (filtros.fechaFin) params.append('hasta', filtros.fechaFin);
       params.append('limit', '100');
       // Llamamos a tu "Súper Buscador"
       const res = await fetch(`http://localhost:3000/buscarEventos?${params.toString()}`);
@@ -60,8 +64,14 @@ function Home() {
   // --- MANEJADORES PARA LOS HIJOS ---
 
   // Recibe Texto y Distrito desde el SearchBar
-  const handleSearchUpdate = (texto: string, distrito: string) => {
-    setFiltros(prev => ({ ...prev, q: texto, distrito: distrito }));
+  const handleSearchUpdate = (texto: string, distrito: string, fechaInicio: string, fechaFin: string) => {
+    setFiltros(prev => ({ 
+      ...prev, 
+      q: texto, 
+      distrito: distrito, 
+      fechaInicio: fechaInicio, // 👈 AÑADE ESTO
+      fechaFin: fechaFin        // 👈 AÑADE ESTO
+    }));
   };
 
   // Recibe la Categoría desde CategoryList

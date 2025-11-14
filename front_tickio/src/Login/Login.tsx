@@ -76,18 +76,6 @@ function Login({ defaultView = 'login' }: LoginProps) {
       case 'register':
         document.title = 'Tickio - Registrarse';
         break;
-      case 'forgotEmail':
-        document.title = 'Tickio - Recuperar Contraseña';
-        break;
-      case 'forgotCode':
-        document.title = 'Tickio - Verificar Código';
-        break;
-      case 'forgotReset':
-        document.title = 'Tickio - Nueva Contraseña';
-        break;
-      case 'forgotSuccess':
-        document.title = 'Tickio - ¡Éxito!';
-        break;
       default:
         document.title = 'Tickio';
     }
@@ -217,33 +205,40 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-    const respuesta = await fetch("http://localhost:3000/usuarios", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nombre: registerForm.fullName,
-        correo: registerForm.email,
-        telefono: registerForm.phone,
-        //dni: registerForm.dni,
-        contrasena: registerForm.password,
-        rol:'Cliente',
-        Activa: 1,
-        distrito:registerForm.distrito,
-        tipo1:registerForm.event1,
-        tipo2:registerForm.event2,
-        tipo3:registerForm.event3, 
-      }),
-    });
+        const respuesta = await fetch("http://localhost:3000/usuarios", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre: registerForm.fullName,
+            correo: registerForm.email,
+            telefono: registerForm.phone,
+            contrasena: registerForm.password,
+            rol:'Cliente',
+            Activa: 1,
+            distrito: registerForm.distrito,
+            tipo1: registerForm.event1 || null, // Envía null si está vacío
+            tipo2: registerForm.event2 || null,
+            tipo3: registerForm.event3 || null, 
+          }),
+        });
 
-    if (!respuesta.ok) throw new Error("Error al registrar usuario");
+        // Leemos la respuesta (sea error o éxito)
+        const data = await respuesta.json();
 
-    const data = await respuesta.json();
-    alert(` Usuario ${data.nombre} registrado con éxito`);
-    changeView("login"); // Redirige al login
-  } catch (error) {
-    console.error(error);
-    alert(" Error al conectar con el servidor");
-  }
+        if (!respuesta.ok) {
+          // Si la respuesta NO fue 200-299, usamos el 'error' del backend
+          throw new Error(data.error || "Error al registrar usuario");
+        }
+
+        // Si todo OK:
+        alert(`Usuario ${data.nombre} registrado con éxito`);
+        changeView("login"); 
+        
+      } catch (error) {
+        // Mostramos el error específico (ej: "El correo ya está registrado")
+        console.error(error);
+        alert((error as Error).message);
+      }
     }
   };
 
