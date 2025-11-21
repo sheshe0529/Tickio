@@ -32,6 +32,7 @@ interface LoginProps {
 
 const initialLoginForm = { email: '', password: '' };
 const initialRegisterForm = {
+  userType: 'Cliente',
   fullName: '',
   email: '',
   phone: '',
@@ -42,6 +43,8 @@ const initialRegisterForm = {
   event3: null,
   password: '',
   confirmPassword: '',
+  ruc: '',
+  razonSocial: '' ,
 };
 const initialForgotForm = {
   email: '',
@@ -184,23 +187,25 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-    const respuesta = await fetch("http://localhost:3000/usuarios", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        nombre: registerForm.fullName,
-        correo: registerForm.email,
-        telefono: registerForm.phone,
-        //dni: registerForm.dni,
-        contrasena: registerForm.password,
-        rol:'Cliente',
-        Activa: 1,
-        distrito:registerForm.distrito,
-        tipo1:registerForm.event1,
-        tipo2:registerForm.event2,
-        tipo3:registerForm.event3, 
-      }),
-    });
+        const respuesta = await fetch("http://localhost:3000/usuarios", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nombre: registerForm.fullName,
+            correo: registerForm.email,
+            telefono: registerForm.phone,
+            contrasena: registerForm.password,
+            rol:registerForm.userType,
+            Activa: 1,
+            distrito: registerForm.distrito,
+            tipo1: registerForm.event1 || null, // Envía null si está vacío
+            tipo2: registerForm.event2 || null,
+            tipo3: registerForm.event3 || null,
+            RUC: registerForm.ruc || null,
+            razon_social: registerForm.razonSocial || null, 
+          }),
+        });
+
 
     if (!respuesta.ok) {
       const errorData = await respuesta.json();
@@ -300,7 +305,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
     setErrors(initialErrors);
     setView(newView);
   };
-
+  const isOrganizer = registerForm.userType === 'Organizador';
   return (
     <div className="login-container">
       <header className="main-header">
@@ -388,6 +393,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
               />
               {errors.register.phone && <div className="form-field-error">{errors.register.phone}</div>}
             </div>
+            
             {/*
             <div className="form-group">
               <label htmlFor="dni">DNI</label>
@@ -436,7 +442,52 @@ function Login({ defaultView = 'login' }: LoginProps) {
                 ))}
               </select>
             </div>
-
+            {/* --- CAMPO DE SELECCIÓN DE TIPO DE USUARIO --- */}
+            <div className="form-group">
+              <label htmlFor="userType">Tipo de Cuenta</label>
+              <select
+                id="userType"
+                name="userType"
+                value={registerForm.userType}
+                onChange={handleRegisterChange}
+                required
+              >
+                <option value="Cliente">Cliente</option>
+                <option value="Organizador">Organizador</option>
+              </select>
+            </div>
+            {isOrganizer && (
+              <div className="form-group">
+                
+                
+                {/* Campo RUC */}
+                <div className="form-group">
+                  <label htmlFor="ruc">RUC</label>
+                  <input
+                    type="text"
+                    id="ruc"
+                    name="ruc"
+                    value={registerForm.ruc}
+                    onChange={handleRegisterChange}
+                    required={isOrganizer} // Hace el campo obligatorio solo si es organizador
+                    maxLength={11}
+                  />
+                </div>
+                
+                {/* Campo Razón Social */}
+                <div className="form-group">
+                  <label htmlFor="razonSocial">Razón Social</label>
+                  <input
+                    type="text"
+                    id="razonSocial"
+                    name="razonSocial"
+                    value={registerForm.razonSocial}
+                    onChange={handleRegisterChange}
+                    required={isOrganizer} // Hace el campo obligatorio solo si es organizador
+                  />
+                </div>
+              </div>
+            )}       
             <div className="form-group">
               <label htmlFor="event1">Evento favorito</label>
               <select id="event1" value={registerForm.event1} onChange={handleRegisterChange}>
