@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import prisma from '../../config/prisma';
-
+import bcrypt from "bcryptjs";
 
 
 // Crear usuario
@@ -25,15 +25,21 @@ export const crearUsuario = async(req: Request, res: Response) =>
     }
     // --- FIN DE LA VERIFICACIÓN ---
 
+    // Hasheamos el password
+    const passwordHasheado = await bcrypt.hash(contrasena, 10); // 10 = saltRounds
+
     // 3. Si no existe, procedemos a crearlo
     const usuario = await prisma.usuario.create({
       data: {
-        nombre, correo, contrasena, telefono, rol, Activa,
+        nombre, correo, contrasena : passwordHasheado, telefono, rol, Activa,
         tipo1, tipo2, tipo3, RUC, razon_social, distrito
       },
     });
 
-    res.json(usuario);
+    // Devolvemos usuario sin la contraseña al front
+    const { contrasena: _, ...usuarioSinPass } = usuario;
+
+    res.json(usuarioSinPass);
   } catch (error) {
     console.error(error);
     // Error genérico por si falla otra cosa
@@ -146,8 +152,15 @@ export const loginUsuario = async (req: Request, res: Response) => {
       where: { correo: correo },
     });
 
-    // 2. Si no existe el usuario O la contraseña no coincide
-    if (!usuario || usuario.contrasena !== contrasena) {
+    // Si no existe, error genérico
+    if (!usuario) {
+      return res.status(401).json({ error: "Correo o contraseña incorrectos" });
+    }
+
+    //  Comparar la contraseña enviada con el hash guardado
+    const passwordValido = await bcrypt.compare(contrasena, usuario.contrasena);
+
+    if (!passwordValido) {
       return res.status(401).json({ error: "Correo o contraseña incorrectos" });
     }
 

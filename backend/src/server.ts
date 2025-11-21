@@ -14,6 +14,8 @@ import { obtenerDistrito } from "./modules/distrito/distrito.controller";
 import eventoBuscarRouter from './modules/evento_tipo/evento.router'; 
 import distritoRouter from './modules/distrito/distrito.router'; 
 
+import eventoFavRouter from "./modules/evento_carrusel/evento_carrusel.router";
+
 
 const app = express();
 app.use(express.json());
@@ -27,6 +29,7 @@ app.use("/buscarEventos", searchRouter); //busqueda compleja de eventos
 app.get("/", (_req, res) => res.json({ message: "Servidor corriendo correctamente" }));
 app.use('/tipo-eventos', obtenerTiposDeEvento);//tipos de eventos
 app.use('/buscarEventos', eventoBuscarRouter); //FILTROS TIPO EVENTOS Y SUBTIPO //
+app.use('/buscarEventosFav', eventoFavRouter); 
 // http://localhost:3000/eventosBuscar/buscar?tipoEvento=CONCIERTO&
 app.use('/distritos', distritoRouter) //distritos y buscar eventos por distrito
 

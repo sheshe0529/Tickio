@@ -30,3 +30,24 @@ export const buscarEventos = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Error al buscar eventos" });
   }
 };
+
+
+export const listarFavoritos = async (req: Request, res: Response) => {
+  const { usuarioId } = req.params;
+
+  try {
+    const id = Number(usuarioId);
+    if (isNaN(id)) {
+      return res.status(400).json({
+        error: "El ID de usuario debe ser un número válido.",
+      });
+    }
+    return res.json(usuarioId);
+    
+  } catch (error) {
+    console.error("Error al listar eventos recomendados por usuario:", error);
+    return res.status(500).json({
+      error: "Error interno al listar los eventos recomendados.",
+    });
+  }
+};
