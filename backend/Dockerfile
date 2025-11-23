@@ -19,4 +19,4 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 # Si usas TS compilado:
-CMD ["node", "dist/server.js"]
+CMD ["npx", "ts-node", "src/server.ts"]
