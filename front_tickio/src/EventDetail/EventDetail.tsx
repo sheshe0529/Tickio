@@ -57,7 +57,7 @@ function EventDetail() {
       try {
         setLoading(true);
         // Asumimos que esta ruta devuelve el evento completo, incluyendo 'tipoEvento'
-        const res = await fetch(`http://localhost:3000/eventos/${id}`); 
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/eventos/${id}`); 
         if (!res.ok) {
           throw new Error('Evento no encontrado');
         }

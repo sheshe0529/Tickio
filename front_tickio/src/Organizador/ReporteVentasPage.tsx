@@ -31,7 +31,7 @@ function ReporteVentasPage() {
       setLoading(true);
       
       // Llamamos al endpoint de reporte que creamos
-      fetch(`http://localhost:3000/eventos/${eventoId}/reporte`)
+      fetch(`${import.meta.env.VITE_API_URL}/eventos/${eventoId}/reporte`)
         .then(res => {
           if (!res.ok) throw new Error('No se pudo cargar el reporte');
           return res.json();

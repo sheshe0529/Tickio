@@ -14,7 +14,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 
   // Cargar la lista de distritos para el select
   useEffect(() => {
-    fetch('http://localhost:3000/distritos')
+    fetch(`${import.meta.env.VITE_API_URL}/distritos`)
       .then(res => res.json())
       .then(data => setListaDistritos(data))
       .catch(err => console.error(err));

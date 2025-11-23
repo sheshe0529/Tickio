@@ -32,7 +32,7 @@ function ReporteGeneralPage() {
     // Carga de datos
     if (user) {
       setLoading(true);
-      fetch(`http://localhost:3000/eventos/organizador/reporte-general/${user.id}`)
+      fetch(`${import.meta.env.VITE_API_URL}/eventos/organizador/reporte-general/${user.id}`)
         .then(res => {
           if (!res.ok) throw new Error('No se pudo cargar el reporte');
           return res.json();

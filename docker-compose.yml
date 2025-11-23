@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: app-backend
+    restart: always
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - NODE_ENV=production
+      - PORT=${BACKEND_PORT}
+    ports:
+      - "3000:3000"
+    networks:
+      - app-net
+
+  frontend:
+    build:
+      context: ./front_tickio
+      args:
+        VITE_API_URL: ${VITE_API_URL}
+    container_name: app-frontend
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - app-net
+    depends_on:
+      - backend
+
+networks:
+  app-net:
+    driver: bridge

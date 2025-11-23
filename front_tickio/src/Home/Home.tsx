@@ -46,7 +46,7 @@ function Home() {
       if (filtros.fechaFin) params.append('hasta', filtros.fechaFin);
       params.append('limit', '100');
       // Llamamos a tu "Súper Buscador"
-      const res = await fetch(`http://localhost:3000/buscarEventos?${params.toString()}`);
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/buscarEventos?${params.toString()}`);
       
       if (!res.ok) throw new Error('Error en la petición');
       const data = await res.json();

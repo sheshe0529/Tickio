@@ -146,7 +146,7 @@ function PasarelaPage() {
     try {
       // (Simulación de pago de tarjeta...)
       // Ahora, registramos la compra en nuestro backend
-      const response = await fetch('http://localhost:3000/compras', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/compras`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)

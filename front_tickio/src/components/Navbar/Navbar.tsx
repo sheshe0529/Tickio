@@ -47,11 +47,11 @@ function Navbar() {
     // Solo cargamos si el modal se abre o si no tenemos los datos aun
     const fetchDatos = async () => {
       try {
-        const resDistritos = await fetch('http://localhost:3000/distritos');
+        const resDistritos = await fetch(`${import.meta.env.VITE_API_URL}/distritos`);
         const dataDistritos = await resDistritos.json();
         setListaDistritos(dataDistritos);
 
-        const resEventos = await fetch('http://localhost:3000/tipo-eventos');
+        const resEventos = await fetch(`${import.meta.env.VITE_API_URL}/tipo-eventos`);
         const dataEventos = await resEventos.json();
         setListaEventos(dataEventos);
       } catch (error) {
@@ -95,7 +95,7 @@ function Navbar() {
         tipo3: editForm.tipo3 || null,
       };
 
-      const response = await fetch(`http://localhost:3000/usuarios/${user.id}`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),

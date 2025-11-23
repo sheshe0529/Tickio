@@ -25,7 +25,7 @@ function MisEventosPage() {
     
     if (user) {
       setLoading(true);
-      fetch(`http://localhost:3000/eventos/organizador/${user.id}`)
+      fetch(`${import.meta.env.VITE_API_URL}/eventos/organizador/${user.id}`)
         .then(res => res.json())
         .then(data => {
           setEventos(data);

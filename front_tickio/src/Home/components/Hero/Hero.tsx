@@ -42,7 +42,7 @@ function Hero() {
     const fetchRecomendados = async () => {
       const usuarioId = user ? user.id : '';
       try {
-        const res = await fetch(`http://localhost:3000/usuarios/recomendaciones?usuarioId=${usuarioId}`);
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/recomendaciones?usuarioId=${usuarioId}`);
         const data = await res.json();
         setRecomendados(data);
       } catch (error) {

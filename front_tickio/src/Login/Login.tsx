@@ -85,7 +85,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
   useEffect(() => {
     // Cargar los enums desde el backend
-    fetch('http://localhost:3000/tipo-eventos')
+    fetch(`${import.meta.env.VITE_API_URL}/tipo-eventos`)
       .then((res) => res.json())
       .then((data) => setEventos(data))
       .catch((err) => console.error('Error al obtener eventos:', err));
@@ -95,7 +95,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
   useEffect(() => {
     // Cargar los enums desde el backend
-    fetch('http://localhost:3000/distritos')
+    fetch(`${import.meta.env.VITE_API_URL}/distritos`)
       .then((res) => res.json())
       .then((data) => setDistritos(data))
       .catch((err) => console.error('Error al obtener distritos:', err));
@@ -131,7 +131,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
     try {
 
-      const respuesta = await fetch("http://localhost:3000/usuarios/login", {
+      const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -205,7 +205,7 @@ function Login({ defaultView = 'login' }: LoginProps) {
 
     if (Object.keys(newErrors).length === 0) {
       try {
-        const respuesta = await fetch("http://localhost:3000/usuarios", {
+        const respuesta = await fetch(`${import.meta.env.VITE_API_URL}/usuarios`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

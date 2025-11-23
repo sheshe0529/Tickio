@@ -53,8 +53,8 @@ function CrearEventoPage() {
       navigate('/');
     }
     // Cargar selects
-    fetch('http://localhost:3000/distritos').then(res => res.json()).then(setDistritos);
-    fetch('http://localhost:3000/tipo-eventos').then(res => res.json()).then(setTiposEvento);
+    fetch(`${import.meta.env.VITE_API_URL}/distritos`).then(res => res.json()).then(setDistritos);
+    fetch(`${import.meta.env.VITE_API_URL}/tipo-eventos`).then(res => res.json()).then(setTiposEvento);
   }, [user, navigate]);
 
   // Manejador para el formulario principal
@@ -132,7 +132,7 @@ function CrearEventoPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:3000/eventos', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/eventos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend)
