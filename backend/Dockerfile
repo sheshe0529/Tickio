@@ -8,8 +8,9 @@ RUN npm install
 # Copiar el resto del código
 COPY . .
 
-# Si usas TypeScript, descomenta:
-# RUN npm run build
+RUN npx prisma generate
+
+RUN npm run build
 
 # Variables de entorno se las pasaremos desde docker-compose
 ENV NODE_ENV=production
