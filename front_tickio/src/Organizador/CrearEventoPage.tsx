@@ -18,6 +18,9 @@ interface TicketForm {
 }
 
 function CrearEventoPage() {
+  useEffect(() => {
+    document.title = 'Tickio - Crear Evento';
+  }, []);
   const { user } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);

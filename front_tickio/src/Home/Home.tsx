@@ -28,7 +28,9 @@ function Home() {
     fechaInicio: '', // 👈 AÑADE ESTO
     fechaFin: ''     // 👈 AÑADE ESTO
   });
-
+  useEffect(() => {
+    document.title = 'Tickio - Inicio';
+  }, []);
   // 1. Se ejecuta automáticamente cuando cambia cualquier filtro
   useEffect(() => {
     buscarEventos();

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo , useEffect} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
@@ -15,6 +15,7 @@ interface TicketHolderForm {
   apellido: string;
   dni: string;
 }
+
 
 // Tus funciones de formateo de tarjeta
 const formatCardNumber = (value: string) => {
@@ -41,7 +42,9 @@ function PasarelaPage() {
   const { cartItems, clearCart } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-
+  useEffect(() => {
+    document.title = 'Tickio - Pasarela de Pago';
+  }, []);
   // Calculamos el total real (con el IGV de tu CartSummary)
   const { finalTotal } = useMemo(() => {
     const sub = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);

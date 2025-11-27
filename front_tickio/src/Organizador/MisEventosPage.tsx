@@ -16,7 +16,9 @@ function MisEventosPage() {
   const navigate = useNavigate();
   const [eventos, setEventos] = useState<Evento[]>([]);
   const [loading, setLoading] = useState(true);
-
+  useEffect(() => {
+    document.title = 'Tickio - Gestionar Eventos';
+  }, []);
   useEffect(() => {
     if (user && user.rol !== 'Organizador') {
       alert("No tienes permisos para acceder a esta página.");

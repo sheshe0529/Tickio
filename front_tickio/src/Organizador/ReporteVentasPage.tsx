@@ -17,7 +17,9 @@ function ReporteVentasPage() {
   const [reporte, setReporte] = useState<ReporteItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+  useEffect(() => {
+    document.title = 'Tickio - Reporte de Ventas';
+  }, []);
   // (Opcional) Guardar nombre del evento
   const [eventoNombre, setEventoNombre] = useState(''); 
 

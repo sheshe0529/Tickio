@@ -53,6 +53,14 @@ function EventDetail() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+      if (event) {
+        document.title = `Tickio - ${event.nombre}`;
+      } else {
+        document.title = 'Tickio - Detalle del Evento';
+      }
+    }, [event]);
+
+  useEffect(() => {
     const fetchEvent = async () => {
       try {
         setLoading(true);

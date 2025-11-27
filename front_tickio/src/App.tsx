@@ -11,6 +11,7 @@ import CarritoPage from './Carrito/Carrito';
 import PasarelaPage from './Pasarela/Pasarela';
 import ConfirmacionPage from './Confirmacion/Confirmacion';
 import TicketsPage from './Tickets/TicketsPage';
+import SobreNosotrosPage from './SobreNosotros/SobreNosotrosPage';
 
 import CrearEventoPage from './Organizador/CrearEventoPage';
 import MisEventosPage from './Organizador/MisEventosPage';
@@ -35,6 +36,7 @@ function App() {
         <Route path="/organizar/eventos" element={<MisEventosPage />} />
         <Route path="/organizar/reporte/:id" element={<ReporteVentasPage />} />
         <Route path="/organizar/reporte-general" element={<ReporteGeneralPage />} />
+        <Route path="/sobre-nosotros" element={<SobreNosotrosPage />} />
       </Route>
     </Routes>
   );

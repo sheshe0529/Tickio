@@ -21,7 +21,9 @@ function ReporteGeneralPage() {
   const navigate = useNavigate();
   const [reporte, setReporte] = useState<EventoReporte[]>([]);
   const [loading, setLoading] = useState(true);
-
+  useEffect(() => {
+    document.title = 'Tickio - Resumen General';
+  }, []);
   useEffect(() => {
     // Protección de ruta
     if (user && user.rol !== 'Organizador') {

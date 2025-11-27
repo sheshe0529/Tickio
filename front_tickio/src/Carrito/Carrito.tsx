@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext'; // 👈 1. Importamos el Contexto
 import './Carrito.css';
@@ -7,7 +7,9 @@ import CartSummary from './components/CartSummary/CartSummary';
 
 function CarritoPage() {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    document.title = 'Tickio - Mi Carrito';
+  }, []);
   // 2. Leemos los datos y funciones reales del Contexto
   const { 
     cartItems, 

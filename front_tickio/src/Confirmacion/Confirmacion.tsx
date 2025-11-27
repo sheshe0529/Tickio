@@ -1,11 +1,13 @@
-import React from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // 1. Solo se usa useNavigate
 import { FaCheckCircle } from 'react-icons/fa';
 import './Confirmacion.css';
 
 function ConfirmacionPage() {
   const navigate = useNavigate();
-
+  useEffect(() => {
+    document.title = 'Tickio - ¡Compra Exitosa!';
+  }, []);
   const handleGoHome = () => {
     navigate('/');
   };

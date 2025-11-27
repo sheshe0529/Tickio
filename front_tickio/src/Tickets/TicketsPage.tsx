@@ -36,7 +36,9 @@ function TicketsPage() { // 👈 2. CAMBIA EL NOMBRE DE LA FUNCIÓN
   const [loading, setLoading] = useState(true);
   const [qrModalUrl, setQrModalUrl] = useState<string | null>(null);
   const [loadingQr, setLoadingQr] = useState(false);
-
+  useEffect(() => {
+    document.title = 'Tickio - Mis Tickets';
+  }, []);
   useEffect(() => {
     if (!user) {
       // 3. CAMBIA EL REDIRECT

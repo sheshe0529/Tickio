@@ -124,9 +124,6 @@ function Navbar() {
             <img src="/logo.png" alt="Tickio Logo" className="navbar-logo-img" />
           </Link>
           <nav className="navbar-links">
-            <Link to="/categoria/concierto">Concierto</Link>
-            <Link to="/categoria/deportes">Deportes</Link>
-            <Link to="/categoria/otros">Otros</Link>
             <Link to="/sobre-nosotros">Sobre Nosotros</Link>
           </nav>
         </div>
